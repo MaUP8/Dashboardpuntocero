@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Punto Cero — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --s1: #161616;
+  --s2: #1e1e1e;
+  --s3: #282828;
+  --bd: #2a2a2a;
+  --bd2: #333;
+  --t1: #e8e8e8;
+  --t2: #888;
+  --t3: #555;
+  --acc: #e8921a;
+  --acc2: #f5a623;
+  --acc-dim: #e8921a22;
+  --gn: #34c759;
+  --gn-dim: #34c75920;
+  --rd: #ff453a;
+  --rd-dim: #ff453a20;
+  --bl: #5ac8fa;
+  --bl-dim: #5ac8fa20;
+  --or: #ff9f0a;
+  --or-dim: #ff9f0a20;
+  --pr: #bf5af2;
+  --pr-dim: #bf5af220;
+  --cy: #64d2ff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:var(--t1); min-height:100vh; }
+.mono { font-family:'JetBrains Mono',monospace; }
+
+/* === HEADER === */
+.hdr {
+  padding:12px 24px;
+  border-bottom:1px solid var(--bd);
+  display:flex;
+  align-items:center;
+  gap:16px;
+  position:sticky;
+  top:0;
+  background:var(--bg);
+  z-index:100;
+  backdrop-filter:blur(12px);
+}
+.logo-wrap { display:flex; align-items:center; gap:10px; }
+.logo-wrap svg { width:28px; height:28px; }
+.logo-text { font-size:1.05rem; font-weight:700; letter-spacing:1px; color:var(--acc); }
+.logo-text span { color:var(--t2); font-weight:300; }
+.hdr-spacer { flex:1; }
+.hdr-status { font-size:.72rem; color:var(--t2); display:flex; align-items:center; gap:6px; }
+.dot { width:6px; height:6px; border-radius:50%; display:inline-block; }
+.dot-gn { background:var(--gn); box-shadow:0 0 6px var(--gn); }
+.dot-rd { background:var(--rd); }
+.dot-or { background:var(--or); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* === FILTERS === */
+.filters {
+  padding:10px 24px;
+  border-bottom:1px solid var(--bd);
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  background:var(--s1);
+}
+.f-group { display:flex; align-items:center; gap:4px; }
+.f-label { font-size:.7rem; color:var(--t2); text-transform:uppercase; letter-spacing:.5px; margin-right:4px; }
+.f-btn {
+  padding:4px 12px;
+  border-radius:4px;
+  border:1px solid var(--bd);
+  background:transparent;
+  color:var(--t2);
+  cursor:pointer;
+  font-size:.72rem;
+  font-family:inherit;
+  transition:all .15s;
+}
+.f-btn:hover { border-color:var(--acc); color:var(--t1); }
+.f-btn:disabled { cursor:default; border-color:var(--bd); }
+.f-btn:disabled:hover { border-color:var(--bd); color:var(--t2); }
+.f-btn.on { background:var(--acc); color:#000; border-color:var(--acc); font-weight:700; }
+.f-sep { width:1px; height:20px; background:var(--bd); margin:0 8px; }
+.f-select {
+  padding:4px 8px;
+  border-radius:4px;
+  border:1px solid var(--bd);
+  background:var(--s2);
+  color:var(--t1);
+  font-size:.72rem;
+  font-family:inherit;
+  cursor:pointer;
+}
+
+/* === TABS === */
+.tabs {
+  padding:0 24px;
+  display:flex;
+  gap:0;
+  border-bottom:1px solid var(--bd);
+  background:var(--s1);
+}
+.tab {
+  padding:10px 20px;
+  border:none;
+  background:transparent;
+  color:var(--t2);
+  cursor:pointer;
+  font-size:.8rem;
+  font-family:inherit;
+  font-weight:500;
+  border-bottom:2px solid transparent;
+  transition:all .15s;
+}
+.tab:hover { color:var(--t1); }
+.tab.on { color:var(--acc); border-bottom-color:var(--acc); }
+
+/* === CONTAINER === */
+.ct { padding:20px 24px; max-width:1500px; margin:0 auto; }
+
+/* === KPIs === */
+.kg { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; margin-bottom:20px; }
+.k {
+  background:var(--s1);
+  border:1px solid var(--bd);
+  border-radius:8px;
+  padding:14px 16px;
+  transition:border-color .2s;
+}
+.k:hover { border-color:var(--bd2); }
+.kl { font-size:.65rem; color:var(--t2); text-transform:uppercase; letter-spacing:.8px; margin-bottom:6px; }
+.kv { font-size:1.4rem; font-weight:700; font-family:'JetBrains Mono',monospace; }
+.ks { font-size:.7rem; color:var(--t3); margin-top:3px; }
+
+/* === CARDS === */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; }
+.g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:20px; }
+@media(max-width:900px) { .g2,.g3 { grid-template-columns:1fr; } }
+@media(max-width:600px) {
+  .hdr { padding:10px 14px; gap:8px; }
+  .logo-text { font-size:.9rem; }
+  .filters { padding:8px 14px; gap:6px; }
+  .f-label { display:none; }
+  .f-btn { padding:3px 8px; font-size:.65rem; }
+  .f-sep { margin:0 4px; }
+  .f-select { font-size:.68rem; max-width:120px; }
+  .tabs { padding:0 14px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .tab { padding:8px 12px; font-size:.72rem; white-space:nowrap; }
+  .ct { padding:12px 14px; }
+  .kg { grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; }
+  .k { padding:10px 12px; }
+  .kv { font-size:1.15rem; }
+  .kl { font-size:.6rem; }
+  .cd { padding:12px; }
+  .bar-h-l { min-width:70px; font-size:.65rem; }
+  .bar-h-v { font-size:.62rem; }
+  .chart-monthly { height:100px; }
+  .chart-col { min-width:30px; }
+  .cfg-box { padding:20px 16px; width:95%; }
+  .cfg-box input { font-size:.78rem; }
+  table { font-size:.68rem; }
+  th, td { padding:5px 6px; }
+}
+.cd {
+  background:var(--s1);
+  border:1px solid var(--bd);
+  border-radius:8px;
+  padding:16px;
+}
+.cd-t {
+  font-size:.72rem;
+  font-weight:500;
+  color:var(--t2);
+  text-transform:uppercase;
+  letter-spacing:.8px;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.cd-t .count {
+  background:var(--s3);
+  padding:1px 8px;
+  border-radius:10px;
+  font-size:.65rem;
+  color:var(--t2);
+}
+
+/* === BARS === */
+.bar-h { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.bar-h-l { min-width:110px; font-size:.72rem; color:var(--t2); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bar-h-tr { flex:1; height:18px; background:var(--s2); border-radius:3px; overflow:hidden; }
+.bar-h-f { height:100%; border-radius:3px; display:flex; align-items:center; padding-left:6px; font-size:.62rem; font-weight:600; transition:width .4s; }
+.bar-h-v { margin-left:6px; font-size:.72rem; color:var(--t1); white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:.68rem; }
+
+/* === TABLES === */
+.tw { overflow-x:auto; max-height:400px; overflow-y:auto; }
+table { width:100%; border-collapse:collapse; font-size:.75rem; }
+th { text-align:left; padding:8px 10px; color:var(--t2); border-bottom:1px solid var(--bd); font-weight:500; font-size:.68rem; text-transform:uppercase; letter-spacing:.5px; position:sticky; top:0; background:var(--s1); z-index:1; }
+td { padding:7px 10px; border-bottom:1px solid var(--bd); }
+tr:hover td { background:var(--s2); }
+.r { text-align:right; }
+
+/* === BADGES === */
+.bg { padding:2px 8px; border-radius:3px; font-size:.65rem; font-weight:600; display:inline-block; letter-spacing:.3px; }
+.bg-gn { background:var(--gn-dim); color:var(--gn); }
+.bg-rd { background:var(--rd-dim); color:var(--rd); }
+.bg-or { background:var(--or-dim); color:var(--or); }
+.bg-bl { background:var(--bl-dim); color:var(--bl); }
+.bg-pr { background:var(--pr-dim); color:var(--pr); }
+.bg-gy { background:#88888815; color:var(--t2); }
+.bg-acc { background:var(--acc-dim); color:var(--acc); }
+
+/* === COLORS === */
+.c-gn { color:var(--gn); } .c-rd { color:var(--rd); } .c-bl { color:var(--bl); }
+.c-or { color:var(--or); } .c-acc { color:var(--acc); } .c-t2 { color:var(--t2); }
+
+/* === CONFIG === */
+.cfg-overlay {
+  position:fixed; inset:0; background:#000c; z-index:200;
+  display:none; align-items:center; justify-content:center;
+}
+.cfg-overlay.show { display:flex; }
+.cfg-box {
+  background:var(--s1); border:1px solid var(--bd); border-radius:12px;
+  padding:28px; width:90%; max-width:520px;
+}
+.cfg-box h3 { font-size:1rem; margin-bottom:4px; }
+.cfg-box p { font-size:.78rem; color:var(--t2); margin-bottom:16px; line-height:1.5; }
+.cfg-box label { font-size:.72rem; color:var(--t2); display:block; margin-bottom:3px; margin-top:10px; }
+.cfg-box input {
+  width:100%; padding:8px 12px; background:var(--s2); border:1px solid var(--bd);
+  border-radius:6px; color:var(--t1); font-size:.82rem; font-family:inherit;
+}
+.cfg-box input:focus { outline:none; border-color:var(--acc); }
+.cfg-btns { margin-top:20px; display:flex; gap:8px; }
+.cfg-btn {
+  padding:8px 20px; border-radius:6px; border:1px solid var(--bd);
+  background:var(--s2); color:var(--t1); cursor:pointer; font-family:inherit; font-size:.82rem;
+}
+.cfg-btn.primary { background:var(--acc); color:#000; border-color:var(--acc); font-weight:700; }
+
+/* === LOADING === */
+.loading-screen {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:80px 20px; color:var(--t2); gap:16px;
+}
+.spinner { width:28px; height:28px; border:2px solid var(--bd); border-top-color:var(--acc); border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* === CHART (monthly) === */
+.chart-monthly {
+  display:flex; align-items:flex-end; gap:3px; height:140px;
+  padding-bottom:24px; overflow-x:auto; position:relative;
+}
+.chart-col {
+  display:flex; flex-direction:column; align-items:center;
+  min-width:44px; flex:1; position:relative; height:100%;
+}
+.chart-bars { display:flex; gap:1px; align-items:flex-end; height:100%; }
+.chart-bar {
+  width:16px; border-radius:2px 2px 0 0; min-height:2px; cursor:default;
+  position:relative; transition:height .3s;
+}
+.chart-bar:hover { opacity:.8; }
+.chart-lbl {
+  font-size:.58rem; color:var(--t3); position:absolute; bottom:-20px;
+  white-space:nowrap; transform:rotate(-30deg); transform-origin:top left;
+}
+.chart-legend { display:flex; gap:14px; margin-bottom:8px; }
+.chart-legend span { font-size:.68rem; display:flex; align-items:center; gap:4px; }
+.chart-legend .sq { width:10px; height:10px; border-radius:2px; }
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--bd); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:var(--t3); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo-wrap">
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="18" r="14" stroke="#e8921a" stroke-width="3.5" fill="none"/>
+      <circle cx="14" cy="14" r="2.5" fill="#e8921a"/>
+    </svg>
+    <div class="logo-text">PUNTO<span> CERO</span></div>
+  </div>
+  <div class="hdr-spacer"></div>
+  <div class="hdr-status" id="statusBar">
+    <span class="dot dot-rd"></span> Sin conexión
+  </div>
+  <button class="f-btn" onclick="loadData()" style="font-size:.75rem">↻ Actualizar</button>
+</div>
+
+<!-- FILTERS -->
+<div class="filters" id="filtersBar" style="display:none">
+  <div class="f-group">
+    <span class="f-label">Año</span>
+    <div id="yearBtns"></div>
+  </div>
+  <div class="f-sep"></div>
+  <div class="f-group">
+    <span class="f-label">Mes</span>
+    <div id="monthBtns" style="display:flex;gap:3px;flex-wrap:wrap"></div>
+  </div>
+  <div class="f-sep"></div>
+  <div class="f-group">
+    <span class="f-label">Proyecto</span>
+    <select class="f-select" id="projFilter" onchange="applyFilters()">
+      <option value="">Todos</option>
+    </select>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="tabsBar" style="display:none">
+  <button class="tab on" data-v="general" onclick="setView('general',this)">General</button>
+  <button class="tab" data-v="proyectos" onclick="setView('proyectos',this)">Proyectos</button>
+  <button class="tab" data-v="rentabilidad" onclick="setView('rentabilidad',this)">Rentabilidad</button>
+  <button class="tab" data-v="capacidad" onclick="setView('capacidad',this)">Capacidad</button>
+  <button class="tab" data-v="disponibilidad" onclick="setView('disponibilidad',this)">Disponibilidad</button>
+  <button class="tab" data-v="gastos" onclick="setView('gastos',this)">Gastos</button>
+  <button class="tab" data-v="pipeline" onclick="setView('pipeline',this)">Pipeline</button>
+</div>
+
+<!-- CONTENT -->
+<div class="ct" id="app">
+  <div class="loading-screen" id="welcome">
+    <div class="spinner"></div>
+    <div style="font-size:.82rem;color:var(--t2)">Cargando datos de Google Sheets...</div>
+  </div>
+  <div id="dashContent" style="display:none"></div>
+</div>
+
+<!-- CONFIG MODAL -->
+<div class="cfg-overlay" id="cfgOverlay" onclick="if(event.target===this)hideConfig()">
+  <div class="cfg-box">
+    <h3>Conexión a Google Sheets</h3>
+    <p>
+      Para conectar el dashboard a tu libro de cálculo:<br>
+      1. Abrí el xlsx en Google Sheets (click derecho → Abrir con → Google Sheets)<br>
+      2. Compartilo con "Cualquiera con el enlace puede ver"<br>
+      3. Copiá el ID del Sheet (la parte larga de la URL entre /d/ y /edit)<br>
+      4. Pegalo acá abajo
+    </p>
+    <label>ID del Google Sheet</label>
+    <input id="cfgSheetId" placeholder="ej: 1vPaajJoqCHCtRSbTvH97Byck3FxhbuOy" spellcheck="false">
+    <div style="margin-top:12px;font-size:.7rem;color:var(--t3)">
+      Nombres de hojas (cambiá solo si son diferentes en tu sheet):
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+      <div><label>Proyectos</label><input id="cfgSheetProy" value="Proyectos"></div>
+      <div><label>Gastos</label><input id="cfgSheetGas" value="Gastos"></div>
+      <div><label>Ingresos</label><input id="cfgSheetIng" value="Ingresos"></div>
+      <div><label>Cotizaciones</label><input id="cfgSheetCot" value="Cotizaciones"></div>
+      <div><label>Horas Trabajadas</label><input id="cfgSheetHoras" value="Horas Trabajadas"></div>
+    </div>
+    <div class="cfg-btns">
+      <button class="cfg-btn primary" onclick="saveConfigAndLoad()">Conectar</button>
+      <button class="cfg-btn" onclick="hideConfig()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== CONFIG ====================
+const CFG_KEY = 'puntoCero_cfg_v2';
+function getCfg() { try { return JSON.parse(localStorage.getItem(CFG_KEY))||{}; } catch { return {}; } }
+function saveCfg(c) { localStorage.setItem(CFG_KEY, JSON.stringify(c)); }
+
+function showConfig() {
+  const c = getCfg();
+  if(c.sheetId) document.getElementById('cfgSheetId').value = c.sheetId;
+  if(c.sheets) {
+    if(c.sheets.proy) document.getElementById('cfgSheetProy').value = c.sheets.proy;
+    if(c.sheets.gas) document.getElementById('cfgSheetGas').value = c.sheets.gas;
+    if(c.sheets.ing) document.getElementById('cfgSheetIng').value = c.sheets.ing;
+    if(c.sheets.cot) document.getElementById('cfgSheetCot').value = c.sheets.cot;
+    if(c.sheets.horas) document.getElementById('cfgSheetHoras').value = c.sheets.horas;
+  }
+  document.getElementById('cfgOverlay').classList.add('show');
+}
+function hideConfig() { document.getElementById('cfgOverlay').classList.remove('show'); }
+
+function saveConfigAndLoad() {
+  const cfg = {
+    sheetId: document.getElementById('cfgSheetId').value.trim(),
+    sheets: {
+      proy: document.getElementById('cfgSheetProy').value.trim(),
+      gas: document.getElementById('cfgSheetGas').value.trim(),
+      ing: document.getElementById('cfgSheetIng').value.trim(),
+      cot: document.getElementById('cfgSheetCot').value.trim(),
+      horas: document.getElementById('cfgSheetHoras').value.trim(),
+    }
+  };
+  saveCfg(cfg);
+  hideConfig();
+  loadData();
+}
+
+// ==================== CSV FETCH & PARSE ====================
+function buildUrl(sheetId, sheetName) {
+  return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+}
+
+function parseCSV(text) {
+  if(!text || !text.trim()) return [];
+  const lines = text.split('\n').map(l=>l.trim()).filter(l=>l);
+  if(lines.length < 2) return [];
+  const headers = parseLine(lines[0]);
+  return lines.slice(1).map(line => {
+    const vals = parseLine(line);
+    const obj = {};
+    headers.forEach((h,i) => obj[h.replace(/^"|"$/g,'').trim()] = (vals[i]||'').replace(/^"|"$/g,'').trim());
+    return obj;
+  });
+}
+
+function parseLine(line) {
+  const r=[]; let c=''; let q=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(q){
+      if(ch==='"'&&line[i+1]==='"'){c+='"';i++;}
+      else if(ch==='"') q=false;
+      else c+=ch;
+    } else {
+      if(ch==='"') q=true;
+      else if(ch===','){r.push(c);c='';}
+      else c+=ch;
+    }
+  }
+  r.push(c);
+  return r;
+}
+
+function parseMonto(s) {
+  if(s === null || s === undefined || s === '') return 0;
+  if(typeof s === 'number') return s;
+  let str = String(s).replace(/[$\s]/g, '');
+  if(!str) return 0;
+  const lastDot = str.lastIndexOf('.');
+  const lastComma = str.lastIndexOf(',');
+  if(lastDot > lastComma) {
+    // US format: "1,234.56" - comma=thousands, dot=decimal
+    str = str.replace(/,/g, '');
+  } else if(lastComma > lastDot) {
+    // UY/EU format: "1.234,56" - dot=thousands, comma=decimal
+    str = str.replace(/\./g, '').replace(',', '.');
+  }
+  return parseFloat(str) || 0;
+}
+
+function parseDate(s) {
+  if(!s) return null;
+  // Handle M/D/YYYY
+  const parts = s.split('/');
+  if(parts.length===3) {
+    const [m,d,y] = parts;
+    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+  return s;
+}
+
+// ==================== DATA ====================
+let RAW = { proy:[], gas:[], ing:[], cot:[], horas:[], provLookup:{} };
+let FILTERED = {};
+let FILTERS = { year:'all', months: new Set(), proj:'' };
+let VIEW = 'general';
+let IS_DEMO = false;
+
+async function fetchSheet(sheetId, sheetName) {
+  return new Promise((resolve, reject) => {
+    const cb = 'pc_' + Math.random().toString(36).slice(2);
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=responseHandler:${cb}&sheet=${encodeURIComponent(sheetName)}&tq=${encodeURIComponent('SELECT *')}`;
+    
+    const timeout = setTimeout(() => {
+      delete window[cb];
+      console.error(`Timeout fetching ${sheetName}`);
+      resolve(null);
+    }, 15000);
+
+    window[cb] = function(resp) {
+      clearTimeout(timeout);
+      delete window[cb];
+      if(script.parentNode) script.parentNode.removeChild(script);
+      if(resp.status === 'error') { resolve(null); return; }
+      try {
+        const cols = resp.table.cols.map((c, i) => c.label || `col_${i}`);
+        const rows = resp.table.rows.map(r => {
+          const obj = {};
+          (r.c || []).forEach((cell, i) => {
+            if(i >= cols.length) return;
+            const key = cols[i];
+            if(!cell) { obj[key] = ''; return; }
+            const v = cell.v;
+            // Date values from gviz come as "Date(YYYY,M,D)" string
+            if(typeof v === 'string' && v.startsWith('Date(')) {
+              const parts = v.replace('Date(','').replace(')','').split(',');
+              const y=parts[0], m=String(+parts[1]+1), d=parts[2];
+              obj[key] = `${m}/${d}/${y}`;
+            } else if(typeof v === 'number') {
+              // For numbers, use raw value to avoid locale formatting issues
+              obj[key] = v;
+            } else {
+              obj[key] = cell.f || String(v ?? '');
+            }
+          });
+          return obj;
+        });
+        resolve(rows);
+      } catch(e) { console.error(`Parse error ${sheetName}:`, e); resolve(null); }
+    };
+
+    const script = document.createElement('script');
+    script.src = url;
+    script.onerror = () => { clearTimeout(timeout); delete window[cb]; resolve(null); };
+    document.head.appendChild(script);
+  });
+}
+
+async function loadData() {
+  const cfg = getCfg();
+  if(!cfg.sheetId && !IS_DEMO) { showConfig(); return; }
+  if(IS_DEMO) { applyFilters(); return; }
+
+  setStatus('loading');
+  document.getElementById('welcome').style.display = 'none';
+
+  const sheets = cfg.sheets || {};
+  const results = await Promise.all([
+    fetchSheet(cfg.sheetId, sheets.proy||'Proyectos'),
+    fetchSheet(cfg.sheetId, sheets.gas||'Gastos'),
+    fetchSheet(cfg.sheetId, sheets.ing||'Ingresos'),
+    fetchSheet(cfg.sheetId, sheets.cot||'Cotizaciones'),
+    fetchSheet(cfg.sheetId, sheets.horas||'Horas Trabajadas'),
+    fetchSheet(cfg.sheetId, sheets.proveedores||'Proveedores'),
+  ]);
+
+  if(results.every(r=>r===null)) {
+    setStatus('error');
+    // If all fail, check if the file needs to be shared
+    document.getElementById('welcome').style.display = 'flex';
+    document.getElementById('welcome').innerHTML = `
+      <div style="font-size:.85rem;color:var(--rd)">No se pudo conectar</div>
+      <div style="font-size:.78rem;color:var(--t2);text-align:center;max-width:400px;line-height:1.6">
+        Verificá que el archivo esté compartido en Google Drive:<br>
+        Click derecho → Compartir → "Cualquiera con el enlace" → Lector
+      </div>`;
+    return;
+  }
+
+  RAW.proy = (results[0]||[]).map(r=>({
+    id: r['ID Proyecto'],
+    n: r['Nombre del Proyecto'],
+    fi: parseDate(r['Fecha de Inicio']),
+    ff: parseDate(r['Fecha de Finalización']),
+    he: parseFloat(r['Estimación de Horas'])||0,
+  }));
+
+  RAW.gas = (results[1]||[]).map(r=>({
+    f: parseDate(r['Fecha']),
+    r: r['Rubro']||'Sin rubro',
+    desc: r['Descripción']||'',
+    m: parseMonto(r['Monto $']),
+    p: r['ID Proyecto']||'',
+    prov: r['ID Proveedor']||r['Proveedor']||'',
+    e: r['Estado']||'Variable',
+  }));
+
+  RAW.ing = (results[2]||[]).map(r=>({
+    f: parseDate(r['Fecha']),
+    p: r['ID Proyecto']||'',
+    m: parseMonto(r['Monto $']),
+    met: r['Método de Pago']||'',
+    est: r['Estado del Pago']||'',
+    obs: r['Observaciones']||'',
+  }));
+
+  RAW.cot = (results[3]||[]).map(r=>({
+    p: r['ID Proyecto']||'',
+    n: r['Nombre Proyecto']||'',
+    m: parseMonto(r['Total Presupuestado']),
+    e: r['Estado']||'',
+    f: parseDate(r['Fecha']),
+  }));
+
+  RAW.horas = (results[4]||[]).map(r=>({
+    f: parseDate(r['Fecha']),
+    p: r['ID Proyecto']||'',
+    h: parseFloat(r['Horas Trabajadas'])||0,
+    desc: r['Descripción']||'',
+  }));
+
+  // Build provider lookup
+  // For xlsx files, gviz may return empty column labels, so we use values directly
+  RAW.provLookup = {};
+  const provRows = results[5] || [];
+  provRows.forEach(r => {
+    const vals = Object.values(r).map(v => String(v || '').trim()).filter(v => v);
+    if(vals.length >= 2) {
+      // First value = ID, second = name
+      RAW.provLookup[vals[0]] = vals[1];
+    }
+  });
+  // If first row looks like headers (contains "Proveedor"), skip it
+  if(RAW.provLookup['ID Proveedor']) delete RAW.provLookup['ID Proveedor'];
+
+  console.log('Provider lookup:', Object.keys(RAW.provLookup).length, 'entries');
+
+  // Resolve provider names in gastos
+  RAW.gas.forEach(g => {
+    if(g.prov && RAW.provLookup[g.prov]) g.prov = RAW.provLookup[g.prov];
+  });
+
+  IS_DEMO = false;
+  setStatus('ok', RAW.proy.length + ' proyectos');
+  buildFilterUI();
+  applyFilters();
+}
+
+function setStatus(s, detail) {
+  const el = document.getElementById('statusBar');
+  if(s==='ok') el.innerHTML = `<span class="dot dot-gn"></span> Conectado${detail?' · '+detail:''}`;
+  else if(s==='loading') el.innerHTML = `<span class="dot dot-or"></span> Cargando...`;
+  else if(s==='error') el.innerHTML = `<span class="dot dot-rd"></span> Error de conexión`;
+  else if(s==='demo') el.innerHTML = `<span class="dot dot-or"></span> Demo`;
+  else el.innerHTML = `<span class="dot dot-rd"></span> Sin conexión`;
+}
+
+// ==================== FILTERS ====================
+function buildFilterUI() {
+  const years = new Set();
+  [...RAW.gas, ...RAW.ing].forEach(r => { if(r.f) years.add(r.f.slice(0,4)); });
+  const yArr = [...years].sort();
+
+  const yBtns = document.getElementById('yearBtns');
+  yBtns.innerHTML = `<button class="f-btn on" onclick="setYear('all',this)">Todo</button>` +
+    yArr.map(y=>`<button class="f-btn" onclick="setYear('${y}',this)">${y}</button>`).join('');
+
+  const mBtns = document.getElementById('monthBtns');
+  const mNames = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  mBtns.innerHTML = `<button class="f-btn on" onclick="setMonth('all',this)">Todo</button>` +
+    mNames.map((m,i)=>`<button class="f-btn" onclick="setMonth('${i+1}',this)">${m}</button>`).join('');
+
+  const pSel = document.getElementById('projFilter');
+  pSel.innerHTML = '<option value="">Todos</option>' +
+    RAW.proy.map(p=>`<option value="${p.id}">${p.n}</option>`).join('');
+
+  document.getElementById('filtersBar').style.display = 'flex';
+  document.getElementById('tabsBar').style.display = 'flex';
+}
+
+window.setYear = function(y, el) {
+  FILTERS.year = y;
+  el.parentElement.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  applyFilters();
+};
+
+window.setMonth = function(m, el) {
+  if(m==='all') {
+    FILTERS.months.clear();
+    el.parentElement.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('on'));
+    el.classList.add('on');
+  } else {
+    const allBtn = el.parentElement.querySelector('.f-btn');
+    allBtn.classList.remove('on');
+    if(FILTERS.months.has(m)) { FILTERS.months.delete(m); el.classList.remove('on'); }
+    else { FILTERS.months.add(m); el.classList.add('on'); }
+    if(FILTERS.months.size===0) { allBtn.classList.add('on'); }
+  }
+  applyFilters();
+};
+
+function matchFilter(dateStr) {
+  if(!dateStr) return false;
+  const y = dateStr.slice(0,4);
+  const m = String(parseInt(dateStr.slice(5,7)));
+  if(FILTERS.year!=='all' && y!==FILTERS.year) return false;
+  if(FILTERS.months.size>0 && !FILTERS.months.has(m)) return false;
+  return true;
+}
+
+function applyFilters() {
+  const fp = FILTERS.proj = document.getElementById('projFilter')?.value || '';
+
+  // When a project is selected, find its active periods
+  let activePeriods = null;
+  if(fp) {
+    const dates = new Set();
+    RAW.gas.filter(g=>g.p===fp&&g.f).forEach(g=>dates.add(g.f.slice(0,7)));
+    RAW.ing.filter(i=>i.p===fp&&i.f).forEach(i=>dates.add(i.f.slice(0,7)));
+    RAW.horas.filter(h=>h.p===fp&&h.f).forEach(h=>dates.add(h.f.slice(0,7)));
+    activePeriods = dates; // set of "YYYY-MM"
+  }
+
+  // Update year/month button states
+  updateFilterButtons(activePeriods);
+
+  // Validate current filters against active periods
+  if(activePeriods && activePeriods.size > 0) {
+    const activeYears = new Set([...activePeriods].map(p=>p.slice(0,4)));
+    if(FILTERS.year!=='all' && !activeYears.has(FILTERS.year)) {
+      FILTERS.year = 'all';
+    }
+    const activeMonths = new Set([...activePeriods].map(p=>String(parseInt(p.slice(5,7)))));
+    FILTERS.months.forEach(m => { if(!activeMonths.has(m)) FILTERS.months.delete(m); });
+  }
+
+  FILTERED.gas = RAW.gas.filter(g => {
+    if(!matchFilter(g.f)) return false;
+    if(fp && g.p !== fp) return false; // When project filtered, only that project's direct gastos
+    return true;
+  });
+
+  FILTERED.ing = RAW.ing.filter(i => {
+    if(!matchFilter(i.f)) return false;
+    if(fp && i.p!==fp) return false;
+    return true;
+  });
+
+  FILTERED.horas = RAW.horas.filter(h => {
+    if(!matchFilter(h.f)) return false;
+    if(fp && h.p !== fp) return false; // When project filtered, only that project's hours
+    return true;
+  });
+
+  FILTERED.cot = fp ? RAW.cot.filter(c=>c.p===fp) : RAW.cot;
+
+  // Projects: filter by project selection AND by time period activity
+  if(fp) {
+    FILTERED.proy = RAW.proy.filter(p=>p.id===fp);
+  } else if(FILTERS.year !== 'all' || FILTERS.months.size > 0) {
+    // Only show projects with activity in the selected period
+    const activeProj = new Set();
+    FILTERED.gas.forEach(g=>{ if(g.p) activeProj.add(g.p); });
+    FILTERED.ing.forEach(i=>{ if(i.p) activeProj.add(i.p); });
+    FILTERED.horas.forEach(h=>{ if(h.p) activeProj.add(h.p); });
+    FILTERED.proy = RAW.proy.filter(p=>activeProj.has(p.id));
+  } else {
+    FILTERED.proy = RAW.proy;
+  }
+
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('dashContent').style.display = 'block';
+  render();
+}
+
+function updateFilterButtons(activePeriods) {
+  const yBtns = document.getElementById('yearBtns');
+  const mBtns = document.getElementById('monthBtns');
+  if(!yBtns || !mBtns) return;
+
+  // Years
+  const activeYears = activePeriods ? new Set([...activePeriods].map(p=>p.slice(0,4))) : null;
+  yBtns.querySelectorAll('.f-btn').forEach(btn => {
+    const y = btn.textContent;
+    if(y === 'Todo') {
+      btn.style.opacity = '1'; btn.disabled = false;
+      btn.className = 'f-btn' + (FILTERS.year==='all'?' on':'');
+    } else if(activeYears && !activeYears.has(y)) {
+      btn.style.opacity = '.25'; btn.disabled = true; btn.classList.remove('on');
+    } else {
+      btn.style.opacity = '1'; btn.disabled = false;
+      btn.className = 'f-btn' + (FILTERS.year===y?' on':'');
+    }
+  });
+
+  // Months
+  const activeMonths = activePeriods ? new Set([...activePeriods].map(p=>String(parseInt(p.slice(5,7))))) : null;
+  const mNames = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  mBtns.querySelectorAll('.f-btn').forEach(btn => {
+    const label = btn.textContent;
+    if(label === 'Todo') {
+      btn.style.opacity = '1'; btn.disabled = false;
+      btn.className = 'f-btn' + (FILTERS.months.size===0?' on':'');
+    } else {
+      const idx = String(mNames.indexOf(label)+1);
+      if(activeMonths && !activeMonths.has(idx)) {
+        btn.style.opacity = '.25'; btn.disabled = true; btn.classList.remove('on');
+      } else {
+        btn.style.opacity = '1'; btn.disabled = false;
+        btn.className = 'f-btn' + (FILTERS.months.has(idx)?' on':'');
+      }
+    }
+  });
+}
+
+// ==================== VIEWS ====================
+function setView(v, el) {
+  VIEW = v;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  if(el) el.classList.add('on');
+  render();
+}
+
+const fmt = n => '$' + Math.round(n).toLocaleString('es-UY');
+const pName = id => (RAW.proy.find(p=>p.id===id)||{}).n || id?.slice(-6) || '—';
+const provName = id => RAW.provLookup[id] || id || '—';
+const ym = d => d ? d.slice(0,7) : '';
+const mLabel = k => {
+  if(!k) return '';
+  const [y,m] = k.split('-');
+  const ms = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return ms[+m] + ' ' + y.slice(2);
+};
+
+function render() {
+  const el = document.getElementById('dashContent');
+  if(VIEW==='general') el.innerHTML = renderGeneral();
+  else if(VIEW==='proyectos') el.innerHTML = renderProyectos();
+  else if(VIEW==='rentabilidad') el.innerHTML = renderRentabilidad();
+  else if(VIEW==='capacidad') el.innerHTML = renderCapacidad();
+  else if(VIEW==='disponibilidad') {
+    el.innerHTML = renderDisponibilidad();
+    setTimeout(()=>{
+      // Wire up day toggle buttons
+      document.querySelectorAll('#cap_workDays .dayBtn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const isOn = btn.classList.toggle('on');
+          btn.style.background = isOn ? 'var(--acc)' : 'transparent';
+          btn.style.color = isOn ? '#000' : 'var(--t2)';
+          btn.style.fontWeight = isOn ? '700' : '400';
+        });
+      });
+      if(window.updateAceptable) window.updateAceptable();
+    }, 50);
+  }
+  else if(VIEW==='gastos') el.innerHTML = renderGastos();
+  else if(VIEW==='pipeline') el.innerHTML = renderPipeline();
+}
+
+function renderGeneral() {
+  const {gas, ing, horas, cot} = FILTERED;
+  const fp = FILTERS.proj;
+  const totI = ing.reduce((s,i)=>s+i.m,0);
+  const totH = horas.reduce((s,h)=>s+h.h,0);
+  const cotA = cot.filter(c=>c.e==='Aceptado');
+  const cotR = cot.filter(c=>c.e==='Rechazado');
+  const tasa = cotA.length+cotR.length > 0 ? ((cotA.length/(cotA.length+cotR.length))*100).toFixed(0) : '—';
+
+  // === PRORATION ENGINE ===
+  const timeHoras = RAW.horas.filter(h => h.f && matchFilter(h.f));
+  const timeGas = RAW.gas.filter(g => g.f && matchFilter(g.f));
+  const hByMonth = {};
+  timeHoras.filter(h=>h.p).forEach(h => {
+    const m = ym(h.f);
+    hByMonth[m] = hByMonth[m] || {total:0};
+    hByMonth[m][h.p] = (hByMonth[m][h.p]||0) + h.h;
+    hByMonth[m].total += h.h;
+  });
+
+  let totalProrated = 0;
+  const proratedByM = {};
+  const proratedByRubro = {};
+  if(fp) {
+    timeGas.filter(g=>!g.p).forEach(g => {
+      const m = ym(g.f);
+      const mh = hByMonth[m];
+      const projH = mh ? (mh[fp]||0) : 0;
+      if(mh && mh.total > 0 && projH > 0) {
+        const share = g.m * (projH / mh.total);
+        totalProrated += share;
+        proratedByM[m] = (proratedByM[m]||0) + share;
+        proratedByRubro[g.r||'Sin rubro'] = (proratedByRubro[g.r||'Sin rubro']||0) + share;
+      }
+    });
+  }
+
+  const directGas = fp ? gas.filter(g => g.p === fp) : gas;
+  const directTotal = directGas.reduce((s,g) => s+g.m, 0);
+  const totG = fp ? directTotal + totalProrated : directTotal;
+  const marg = totI - totG;
+
+  // === MONTHLY: split fijo / variable / prorrateo ===
+  const meses = {};
+  ing.forEach(i=>{const k=ym(i.f);if(k){meses[k]=meses[k]||{i:0,gV:0,gF:0,gP:0};meses[k].i+=i.m;}});
+  const srcGas = fp ? directGas : gas;
+  srcGas.forEach(g=>{
+    const k=ym(g.f); if(!k) return;
+    meses[k]=meses[k]||{i:0,gV:0,gF:0,gP:0};
+    if(g.e==='Fijo') meses[k].gF+=g.m; else meses[k].gV+=g.m;
+  });
+  if(fp) Object.entries(proratedByM).forEach(([m,v])=>{meses[m]=meses[m]||{i:0,gV:0,gF:0,gP:0};meses[m].gP+=v;});
+  const mk = Object.keys(meses).sort();
+  const maxM = Math.max(1,...mk.map(k=>Math.max(meses[k].i, meses[k].gV+meses[k].gF+meses[k].gP)));
+
+  // === RUBROS: direct + prorated ===
+  const rubros = {};
+  directGas.forEach(g=>{rubros[g.r]=(rubros[g.r]||0)+g.m;});
+  if(fp) Object.entries(proratedByRubro).forEach(([r,m])=>{rubros[r+' (prorr.)']=(rubros[r+' (prorr.)']||0)+m;});
+  const maxR = Math.max(1,...Object.values(rubros));
+  const rC = r => {
+    const base = r.replace(' (prorr.)','');
+    const map = {Insumos:'var(--acc)',Alquiler:'var(--bl)','Software/Licencias':'var(--pr)',Herramientas:'var(--cy)','Honorarios/Mano de Obra Externa':'var(--or)','Marketing/Publicidad':'var(--gn)',Logistica:'var(--rd)','Impuestos y Tasas':'var(--t2)'};
+    return map[base] || 'var(--t3)';
+  };
+
+  // === PROVEEDORES ===
+  const provs = {};
+  directGas.forEach(g=>{if(g.prov){const n=provName(g.prov);provs[n]=(provs[n]||0)+g.m;}});
+  const maxP = Math.max(1,...Object.values(provs));
+  const topP = Object.entries(provs).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  return `
+  <div class="kg">
+    <div class="k"><div class="kl">Ingresos</div><div class="kv c-gn">${fmt(totI)}</div></div>
+    <div class="k"><div class="kl">Gastos${fp?' (dir.+prorr.)':''}</div><div class="kv c-rd">${fmt(totG)}</div>${fp&&totalProrated>0?`<div class="ks">Dir: ${fmt(directTotal)} · Prorr: ${fmt(totalProrated)}</div>`:''}</div>
+    <div class="k"><div class="kl">Margen neto</div><div class="kv ${marg>=0?'c-gn':'c-rd'}">${fmt(marg)}</div><div class="ks">${totI>0?(marg/totI*100).toFixed(1)+'%':'—'}</div></div>
+    <div class="k"><div class="kl">Horas</div><div class="kv c-bl">${totH||'—'}</div></div>
+    <div class="k"><div class="kl">$/hora</div><div class="kv c-acc">${totH>0?fmt(totI/totH):'—'}</div></div>
+    <div class="k"><div class="kl">Conversión</div><div class="kv c-acc">${tasa}%</div><div class="ks">${cotA.length} de ${cotA.length+cotR.length}</div></div>
+  </div>
+
+  <div class="cd" style="margin-bottom:16px">
+    <div class="cd-t">Ingresos vs Gastos <span class="count">${mk.length} meses</span></div>
+    <div class="chart-legend">
+      <span><div class="sq" style="background:var(--gn)"></div> Ingresos</span>
+      <span><div class="sq" style="background:var(--or)"></div> G.Variable</span>
+      <span><div class="sq" style="background:var(--bl)"></div> G.Fijo</span>
+      ${fp?'<span><div class="sq" style="background:var(--pr)"></div> Prorrateo</span>':''}
+    </div>
+    <div class="chart-monthly">
+      ${mk.map(k=>{
+        const d=meses[k]; const gTot=d.gV+d.gF+d.gP;
+        const hi=(d.i/maxM*100);
+        return `<div class="chart-col">
+          <div class="chart-bars">
+            <div class="chart-bar" style="height:${hi}%;background:var(--gn)" title="${mLabel(k)} Ing: ${fmt(d.i)}"></div>
+            <div style="display:flex;flex-direction:column;justify-content:flex-end;height:100%">
+              ${d.gP>0?`<div style="width:16px;height:${(d.gP/maxM*100)}%;background:var(--pr);border-radius:2px 2px 0 0;min-height:2px" title="Prorrateo: ${fmt(d.gP)}"></div>`:''}
+              ${d.gF>0?`<div style="width:16px;height:${(d.gF/maxM*100)}%;background:var(--bl);min-height:2px" title="Fijo: ${fmt(d.gF)}"></div>`:''}
+              ${d.gV>0?`<div style="width:16px;height:${(d.gV/maxM*100)}%;background:var(--or);min-height:2px" title="Variable: ${fmt(d.gV)}"></div>`:''}
+            </div>
+          </div>
+          <div class="chart-lbl">${mLabel(k)}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="cd">
+      <div class="cd-t">Gastos por rubro${fp?' (incl. prorrateo)':''}</div>
+      ${Object.entries(rubros).sort((a,b)=>b[1]-a[1]).map(([r,m])=>`
+        <div class="bar-h">
+          <div class="bar-h-l">${r}</div>
+          <div class="bar-h-tr"><div class="bar-h-f" style="width:${(m/maxR*100).toFixed(0)}%;background:${rC(r)};${r.includes('prorr.')?'opacity:.6':''}">&nbsp;</div></div>
+          <div class="bar-h-v">${fmt(m)}</div>
+        </div>`).join('')}
+    </div>
+    <div class="cd">
+      <div class="cd-t">Top proveedores <span class="count">${topP.length}</span></div>
+      ${topP.map(([p,m])=>`
+        <div class="bar-h">
+          <div class="bar-h-l">${p}</div>
+          <div class="bar-h-tr"><div class="bar-h-f" style="width:${(m/maxP*100).toFixed(0)}%;background:var(--acc)">&nbsp;</div></div>
+          <div class="bar-h-v">${fmt(m)}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderProyectos() {
+  const {gas, ing, horas} = FILTERED;
+
+  // === PRORATION: distribute unassigned costs by hours ===
+  // Use RAW data filtered only by TIME (not by project) for fair distribution
+  const timeFilteredHoras = RAW.horas.filter(h => h.f && matchFilter(h.f));
+  const timeFilteredGas = RAW.gas.filter(g => g.f && matchFilter(g.f));
+
+  // 1. Hours per project per month (ALL projects in time period)
+  const hByPM = {}; // { "2025-01": { "PROY-xxx": 5, total: 20 } }
+  timeFilteredHoras.filter(h=>h.p).forEach(h => {
+    const m = ym(h.f);
+    hByPM[m] = hByPM[m] || { total:0 };
+    hByPM[m][h.p] = (hByPM[m][h.p]||0) + h.h;
+    hByPM[m].total += h.h;
+  });
+
+  // 2. Unassigned costs per month (ALL unassigned costs in time period)
+  const unassignedByM = {};
+  timeFilteredGas.filter(g=>!g.p).forEach(g => {
+    const m = ym(g.f);
+    unassignedByM[m] = (unassignedByM[m]||0) + g.m;
+  });
+
+  // 3. Aggregate per project: direct costs + prorated
+  const pd = {};
+  ing.forEach(i=>{pd[i.p]=pd[i.p]||{i:0,gDir:0,gPro:0,h:0};pd[i.p].i+=i.m;});
+  gas.filter(g=>g.p).forEach(g=>{pd[g.p]=pd[g.p]||{i:0,gDir:0,gPro:0,h:0};pd[g.p].gDir+=g.m;});
+  horas.filter(h=>h.p).forEach(h=>{pd[h.p]=pd[h.p]||{i:0,gDir:0,gPro:0,h:0};pd[h.p].h+=h.h;});
+
+  // 4. Distribute unassigned costs proportionally by hours share
+  Object.entries(unassignedByM).forEach(([m, cost]) => {
+    const mh = hByPM[m];
+    if(!mh || mh.total <= 0) return;
+    Object.entries(mh).forEach(([pid, hrs]) => {
+      if(pid === 'total') return;
+      pd[pid] = pd[pid] || {i:0,gDir:0,gPro:0,h:0};
+      pd[pid].gPro += cost * (hrs / mh.total);
+    });
+  });
+
+  const totI = ing.reduce((s,i)=>s+i.m,0);
+  // Only count budget of projects that have activity in the period
+  const projIds = new Set(FILTERED.proy.map(p=>p.id));
+  const totPresup = RAW.cot.filter(c=>c.e==='Aceptado'&&projIds.has(c.p)).reduce((s,c)=>s+c.m,0);
+
+  const rows = FILTERED.proy.map(p=>{
+    const d = pd[p.id]||{i:0,gDir:0,gPro:0,h:0};
+    const c = RAW.cot.find(c=>c.p===p.id);
+    const presup = c?c.m:0;
+    const gTot = d.gDir + d.gPro;
+    const marg = d.i - gTot;
+    const ros = d.i>0 ? (marg/d.i*100) : null;
+    const xh = d.h>0 ? d.i/d.h : 0;
+    return {...p,...d,presup,gTot,marg,ros,xh};
+  }).sort((a,b)=>b.i-a.i);
+
+  return `
+  <div class="kg">
+    <div class="k"><div class="kl">Proyectos</div><div class="kv c-bl">${rows.length}</div></div>
+    <div class="k"><div class="kl">Presupuestado</div><div class="kv c-acc">${fmt(totPresup)}</div></div>
+    <div class="k"><div class="kl">Cobrado</div><div class="kv c-gn">${fmt(totI)}</div><div class="ks">${totPresup>0?(totI/totPresup*100).toFixed(0)+'% del presup.':'—'}</div></div>
+    <div class="k"><div class="kl">Pendiente</div><div class="kv c-or">${fmt(Math.max(0,totPresup-totI))}</div></div>
+  </div>
+  <div class="cd">
+    <div class="cd-t">Detalle por proyecto <span class="count">${rows.length}</span></div>
+    <div style="font-size:.65rem;color:var(--t3);margin-bottom:10px">Costo incluye prorrateo de gastos fijos y sin asignar por horas trabajadas</div>
+    <div class="tw">
+      <table>
+        <tr><th>Proyecto</th><th class="r">Presup.</th><th class="r">Cobrado</th><th class="r">G.Directo</th><th class="r">G.Prorrateado</th><th class="r">Costo total</th><th class="r">Margen</th><th class="r">ROS</th><th class="r">Hs</th><th class="r">$/h</th></tr>
+        ${rows.map(r=>`<tr>
+          <td style="font-weight:500">${r.n}</td>
+          <td class="r mono" style="font-size:.7rem">${r.presup?fmt(r.presup):'—'}</td>
+          <td class="r mono c-gn" style="font-size:.7rem">${r.i?fmt(r.i):'—'}</td>
+          <td class="r mono c-t2" style="font-size:.7rem">${r.gDir?fmt(r.gDir):'—'}</td>
+          <td class="r mono c-or" style="font-size:.7rem">${r.gPro?fmt(r.gPro):'—'}</td>
+          <td class="r mono c-rd" style="font-size:.7rem">${r.gTot?fmt(r.gTot):'—'}</td>
+          <td class="r mono ${r.marg>=0?'c-gn':'c-rd'}" style="font-size:.7rem">${r.i||r.gTot?fmt(r.marg):'—'}</td>
+          <td class="r"><span class="bg ${r.ros>40?'bg-gn':r.ros>0?'bg-or':'bg-rd'}">${r.ros!==null?r.ros.toFixed(0)+'%':'—'}</span></td>
+          <td class="r mono c-t2" style="font-size:.7rem">${r.h||'—'}</td>
+          <td class="r mono c-acc" style="font-size:.7rem">${r.xh?fmt(r.xh):'—'}</td>
+        </tr>`).join('')}
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderGastos() {
+  const {gas} = FILTERED;
+  const totG = gas.reduce((s,g)=>s+g.m,0);
+  const gasFijo = gas.filter(g=>g.e==='Fijo').reduce((s,g)=>s+g.m,0);
+  const gasVar = totG - gasFijo;
+
+  const byMonth = {};
+  gas.forEach(g=>{const k=ym(g.f);if(k){byMonth[k]=(byMonth[k]||0)+g.m;}});
+  const mk = Object.keys(byMonth).sort();
+  const maxGM = Math.max(1,...Object.values(byMonth));
+
+  return `
+  <div class="kg">
+    <div class="k"><div class="kl">Gasto total</div><div class="kv c-rd">${fmt(totG)}</div></div>
+    <div class="k"><div class="kl">Promedio/mes</div><div class="kv">${mk.length>0?fmt(totG/mk.length):'—'}</div></div>
+    <div class="k"><div class="kl">Fijos</div><div class="kv">${fmt(gasFijo)}</div><div class="ks">${totG>0?(gasFijo/totG*100).toFixed(0)+'%':'—'}</div></div>
+    <div class="k"><div class="kl">Variables</div><div class="kv">${fmt(gasVar)}</div><div class="ks">${totG>0?(gasVar/totG*100).toFixed(0)+'%':'—'}</div></div>
+  </div>
+  <div class="cd" style="margin-bottom:16px">
+    <div class="cd-t">Gastos por mes <span class="count">${mk.length}</span></div>
+    <div class="chart-monthly">
+      ${mk.map(k=>{
+        const h=(byMonth[k]/maxGM*100);
+        return `<div class="chart-col">
+          <div class="chart-bars">
+            <div class="chart-bar" style="height:${h}%;background:var(--rd);width:24px" title="${mLabel(k)}: ${fmt(byMonth[k])}"></div>
+          </div>
+          <div class="chart-lbl">${mLabel(k)}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+  <div class="cd">
+    <div class="cd-t">Últimos movimientos <span class="count">${Math.min(25,gas.length)}</span></div>
+    <div class="tw">
+      <table>
+        <tr><th>Fecha</th><th>Rubro</th><th>Descripción</th><th>Proyecto</th><th class="r">Monto</th><th>Tipo</th></tr>
+        ${[...gas].sort((a,b)=>(b.f||'').localeCompare(a.f||'')).slice(0,25).map(g=>`<tr>
+          <td class="mono c-t2" style="font-size:.68rem">${g.f?(g.f.slice(8)+'/'+g.f.slice(5,7)+'/'+g.f.slice(2,4)):'—'}</td>
+          <td><span class="bg ${g.r.includes('Insumo')?'bg-acc':g.r.includes('Alquiler')?'bg-bl':g.r.includes('Software')?'bg-pr':g.r.includes('Herramienta')?'bg-bl':g.r.includes('Honorario')?'bg-or':'bg-gy'}">${g.r}</span></td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.desc||'—'}</td>
+          <td class="c-t2">${g.p?pName(g.p):'—'}</td>
+          <td class="r mono" style="font-size:.72rem">${fmt(g.m)}</td>
+          <td><span class="bg ${g.e==='Fijo'?'bg-bl':'bg-gy'}">${g.e}</span></td>
+        </tr>`).join('')}
+      </table>
+    </div>
+  </div>`;
+}
+
+// ==================== RENTABILIDAD ====================
+function renderRentabilidad() {
+  const {gas, ing, horas} = FILTERED;
+  const fp = FILTERS.proj;
+
+  // Proration engine (same as renderGeneral)
+  const timeHoras = RAW.horas.filter(h => h.f && matchFilter(h.f));
+  const timeGas = RAW.gas.filter(g => g.f && matchFilter(g.f));
+  const hByMonth = {};
+  timeHoras.filter(h=>h.p).forEach(h => {
+    const m = ym(h.f);
+    hByMonth[m] = hByMonth[m] || {total:0};
+    hByMonth[m][h.p] = (hByMonth[m][h.p]||0) + h.h;
+    hByMonth[m].total += h.h;
+  });
+
+  // Per-project aggregation with proration
+  const pd = {};
+  ing.forEach(i=>{pd[i.p]=pd[i.p]||{i:0,gD:0,gP:0,h:0};pd[i.p].i+=i.m;});
+  gas.filter(g=>g.p).forEach(g=>{pd[g.p]=pd[g.p]||{i:0,gD:0,gP:0,h:0};pd[g.p].gD+=g.m;});
+  horas.filter(h=>h.p).forEach(h=>{pd[h.p]=pd[h.p]||{i:0,gD:0,gP:0,h:0};pd[h.p].h+=h.h;});
+
+  // Distribute unassigned costs
+  const unByM = {};
+  timeGas.filter(g=>!g.p).forEach(g=>{const m=ym(g.f);unByM[m]=(unByM[m]||0)+g.m;});
+  Object.entries(unByM).forEach(([m, cost]) => {
+    const mh = hByMonth[m];
+    if(!mh || mh.total <= 0) return;
+    Object.entries(mh).forEach(([pid, hrs]) => {
+      if(pid === 'total') return;
+      pd[pid] = pd[pid] || {i:0,gD:0,gP:0,h:0};
+      pd[pid].gP += cost * (hrs / mh.total);
+    });
+  });
+
+  const rows = FILTERED.proy.map(p=>{
+    const d = pd[p.id]||{i:0,gD:0,gP:0,h:0};
+    const c = RAW.cot.find(c=>c.p===p.id);
+    const presup = c?c.m:0;
+    const gTot = d.gD + d.gP;
+    const marg = d.i - gTot;
+    const ros = d.i>0 ? (marg/d.i*100) : (gTot>0?-100:0);
+    const xh = d.h>0 ? d.i/d.h : 0;
+    return {id:p.id, n:p.n, fi:p.fi, ff:p.ff, ...d, presup, gTot, marg, ros, xh};
+  }).filter(r=>r.i>0||r.gTot>0).sort((a,b)=>b.ros-a.ros);
+
+  const maxBar = Math.max(1,...rows.map(r=>Math.max(r.i, r.gTot)));
+  const totalMarg = rows.reduce((s,r)=>s+r.marg,0);
+  const totalI = rows.reduce((s,r)=>s+r.i,0);
+  const avgRos = totalI>0?(totalMarg/totalI*100).toFixed(1):0;
+  const profitable = rows.filter(r=>r.ros>0).length;
+
+  return `
+  <div class="kg">
+    <div class="k"><div class="kl">Proyectos analizados</div><div class="kv c-bl">${rows.length}</div></div>
+    <div class="k"><div class="kl">Rentables</div><div class="kv c-gn">${profitable}</div><div class="ks">${rows.length>0?((profitable/rows.length)*100).toFixed(0)+'%':'—'}</div></div>
+    <div class="k"><div class="kl">No rentables</div><div class="kv c-rd">${rows.length-profitable}</div></div>
+    <div class="k"><div class="kl">ROS promedio</div><div class="kv ${avgRos>=0?'c-gn':'c-rd'}">${avgRos}%</div></div>
+    <div class="k"><div class="kl">Margen total</div><div class="kv ${totalMarg>=0?'c-gn':'c-rd'}">${fmt(totalMarg)}</div></div>
+  </div>
+
+  <div class="cd" style="margin-bottom:16px">
+    <div class="cd-t">Rentabilidad por proyecto (ordenado por ROS)</div>
+    <div style="font-size:.65rem;color:var(--t3);margin-bottom:12px">Verde = ingreso · Rojo/naranja = costo (directo + prorrateado) · Línea = punto de equilibrio</div>
+    <div style="overflow-y:auto;max-height:500px">
+    ${rows.map(r=>{
+      const wI = (r.i/maxBar*100).toFixed(1);
+      const wG = (r.gTot/maxBar*100).toFixed(1);
+      const rosCol = r.ros>40?'c-gn':r.ros>0?'c-or':'c-rd';
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:4px 0">
+        <div style="min-width:140px;max-width:140px;font-size:.72rem;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500">${r.n}</div>
+        <div style="flex:1;position:relative;height:28px">
+          <div style="position:absolute;top:0;left:0;height:13px;width:${wI}%;background:var(--gn);border-radius:3px 3px 0 0;opacity:.9" title="Ingreso: ${fmt(r.i)}"></div>
+          <div style="position:absolute;top:14px;left:0;height:13px;width:${wG}%;background:${r.ros>=0?'var(--or)':'var(--rd)'};border-radius:0 0 3px 3px;opacity:.8" title="Costo: ${fmt(r.gTot)} (Dir: ${fmt(r.gD)} + Prorr: ${fmt(r.gP)})"></div>
+        </div>
+        <div style="min-width:55px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:.7rem" class="${rosCol}">${r.ros.toFixed(0)}%</div>
+        <div style="min-width:65px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--t2)">${fmt(r.marg)}</div>
+      </div>`;
+    }).join('')}
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="cd">
+      <div class="cd-t">Top 10 — Mayor margen</div>
+      <div class="tw" style="max-height:300px">
+        <table>
+          <tr><th>Proyecto</th><th class="r">Ingreso</th><th class="r">Costo</th><th class="r">Margen</th><th class="r">ROS</th><th class="r">$/h</th></tr>
+          ${[...rows].sort((a,b)=>b.marg-a.marg).slice(0,10).map(r=>`<tr>
+            <td style="font-weight:500">${r.n}</td>
+            <td class="r mono c-gn" style="font-size:.7rem">${fmt(r.i)}</td>
+            <td class="r mono c-rd" style="font-size:.7rem">${fmt(r.gTot)}</td>
+            <td class="r mono ${r.marg>=0?'c-gn':'c-rd'}" style="font-size:.7rem">${fmt(r.marg)}</td>
+            <td class="r"><span class="bg ${r.ros>40?'bg-gn':r.ros>0?'bg-or':'bg-rd'}">${r.ros.toFixed(0)}%</span></td>
+            <td class="r mono c-acc" style="font-size:.7rem">${r.xh?fmt(r.xh):'—'}</td>
+          </tr>`).join('')}
+        </table>
+      </div>
+    </div>
+    <div class="cd">
+      <div class="cd-t">Proyectos con pérdida</div>
+      <div class="tw" style="max-height:300px">
+        ${rows.filter(r=>r.marg<0).length>0?`<table>
+          <tr><th>Proyecto</th><th class="r">Ingreso</th><th class="r">Costo</th><th class="r">Pérdida</th><th class="r">ROS</th></tr>
+          ${rows.filter(r=>r.marg<0).sort((a,b)=>a.marg-b.marg).map(r=>`<tr>
+            <td style="font-weight:500">${r.n}</td>
+            <td class="r mono" style="font-size:.7rem">${fmt(r.i)}</td>
+            <td class="r mono c-rd" style="font-size:.7rem">${fmt(r.gTot)}</td>
+            <td class="r mono c-rd" style="font-size:.7rem">${fmt(r.marg)}</td>
+            <td class="r"><span class="bg bg-rd">${r.ros.toFixed(0)}%</span></td>
+          </tr>`).join('')}
+        </table>`:'<div style="color:var(--gn);font-size:.82rem;padding:16px 0">Todos los proyectos son rentables en el período</div>'}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ==================== CAPACIDAD ====================
+function renderCapacidad() {
+  const {horas} = FILTERED;
+  const fp = FILTERS.proj;
+
+  // All hours in period (for context, even when project filtered)
+  const allHoras = RAW.horas.filter(h => h.f && matchFilter(h.f));
+
+  // Hours per month
+  const hByM = {};
+  allHoras.filter(h=>h.p).forEach(h => {
+    const m = ym(h.f);
+    hByM[m] = hByM[m] || {total:0, proj:{}};
+    hByM[m].total += h.h;
+    hByM[m].proj[h.p] = (hByM[m].proj[h.p]||0) + h.h;
+  });
+  // Include unassigned hours
+  allHoras.filter(h=>!h.p).forEach(h => {
+    const m = ym(h.f);
+    hByM[m] = hByM[m] || {total:0, proj:{}};
+    hByM[m].total += h.h;
+    hByM[m].proj['_sin_proy'] = (hByM[m].proj['_sin_proy']||0) + h.h;
+  });
+
+  const mk = Object.keys(hByM).sort();
+  const maxHM = Math.max(1,...mk.map(k=>hByM[k].total));
+  const totalH = allHoras.reduce((s,h)=>s+h.h,0);
+  const avgPerMonth = mk.length>0?(totalH/mk.length).toFixed(1):0;
+
+  // Hours per project
+  const hByP = {};
+  allHoras.filter(h=>h.p).forEach(h=>{hByP[h.p]=(hByP[h.p]||0)+h.h;});
+  const topProj = Object.entries(hByP).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  const maxHP = Math.max(1,...topProj.map(([,h])=>h));
+
+  // Projects per month (concurrency)
+  const projPerMonth = mk.map(k => ({m:k, n:Object.keys(hByM[k].proj).filter(p=>p!=='_sin_proy').length, h:hByM[k].total}));
+
+  // Estimated vs real hours
+  const estVsReal = FILTERED.proy.map(p => {
+    const real = hByP[p.id]||0;
+    const est = p.he||0;
+    if(!real && !est) return null;
+    const diff = est>0 ? ((real-est)/est*100).toFixed(0) : null;
+    return {n:p.n, est, real, diff};
+  }).filter(Boolean).filter(r=>r.real>0).sort((a,b)=>b.real-a.real);
+
+  // === CALIBRACIÓN: KPI de error de estimación ===
+  // Solo cerrados (último 30 días sin actividad) con est >= 5hs, últimos 6 meses
+  const today = new Date();
+  const sixMonthsAgo = new Date(today.getFullYear(), today.getMonth()-6, today.getDate());
+  const cutoffStr = sixMonthsAgo.toISOString().slice(0,10);
+  const cutoffInact = new Date(today.getTime() - 30*86400000).toISOString().slice(0,10);
+
+  const lastActByP = {};
+  RAW.horas.filter(h=>h.p&&h.f).forEach(h=>{if(!lastActByP[h.p]||h.f>lastActByP[h.p])lastActByP[h.p]=h.f;});
+  RAW.gas.filter(g=>g.p&&g.f).forEach(g=>{if(!lastActByP[g.p]||g.f>lastActByP[g.p])lastActByP[g.p]=g.f;});
+  RAW.ing.filter(i=>i.p&&i.f).forEach(i=>{if(!lastActByP[i.p]||i.f>lastActByP[i.p])lastActByP[i.p]=i.f;});
+
+  const calibrSet = RAW.proy.map(p => {
+    const real = hByP[p.id]||0;
+    const est = p.he||0;
+    const lastAct = lastActByP[p.id];
+    if(est < 5) return null;          // filtra ruido
+    if(real === 0) return null;       // sin horas cargadas, no medible
+    if(!lastAct) return null;
+    if(lastAct < cutoffStr) return null;     // fuera de 6 meses
+    if(lastAct >= cutoffInact) return null;  // todavía abierto, no cerrado
+    const errorPct = (real - est) / est * 100;
+    return {n:p.n, est, real, errorPct, lastAct};
+  }).filter(Boolean);
+
+  let calibr = null;
+  if(calibrSet.length >= 3) {
+    const sumErr = calibrSet.reduce((s,r)=>s+r.errorPct,0);
+    const sumAbs = calibrSet.reduce((s,r)=>s+Math.abs(r.errorPct),0);
+    const sesgo = sumErr / calibrSet.length;
+    const precision = sumAbs / calibrSet.length;
+    const factor = 1 + (sesgo/100);
+    const acertados = calibrSet.filter(r=>Math.abs(r.errorPct)<=20).length;
+    const sobrest = calibrSet.filter(r=>r.errorPct < -20).length;
+    const subest = calibrSet.filter(r=>r.errorPct > 20).length;
+    calibr = { n:calibrSet.length, sesgo, precision, factor, acertados, sobrest, subest, items:calibrSet };
+  }
+
+  // Days between start and end per project (lead time)
+  const leadTimes = FILTERED.proy.filter(p=>p.fi&&p.ff).map(p => {
+    const d1=new Date(p.fi), d2=new Date(p.ff);
+    const days = Math.round((d2-d1)/(1000*60*60*24));
+    const h = hByP[p.id]||0;
+    return {n:p.n, days, h, density: days>0?(h/days).toFixed(2):0};
+  }).filter(r=>r.h>0).sort((a,b)=>b.h-a.h);
+
+  return `
+  <div class="kg">
+    <div class="k"><div class="kl">Horas totales</div><div class="kv c-bl">${totalH}</div></div>
+    <div class="k"><div class="kl">Promedio/mes</div><div class="kv">${avgPerMonth}</div></div>
+    <div class="k"><div class="kl">Meses activos</div><div class="kv c-acc">${mk.length}</div></div>
+    <div class="k"><div class="kl">Proyectos con hs</div><div class="kv">${Object.keys(hByP).length}</div></div>
+    <div class="k"><div class="kl">Proy/mes (prom)</div><div class="kv">${projPerMonth.length>0?(projPerMonth.reduce((s,p)=>s+p.n,0)/projPerMonth.length).toFixed(1):'—'}</div></div>
+  </div>
+
+  <div class="cd" style="margin-bottom:16px">
+    <div class="cd-t">Horas por mes <span class="count">${mk.length} meses</span></div>
+    <div class="chart-monthly" style="height:120px">
+      ${mk.map(k=>{
+        const d=hByM[k];
+        const h=(d.total/maxHM*100);
+        // If project filtered, show that project's share highlighted
+        const projH = fp && d.proj[fp] ? d.proj[fp] : 0;
+        const otherH = d.total - projH;
+        return `<div class="chart-col">
+          <div class="chart-bars">
+            <div style="display:flex;flex-direction:column;justify-content:flex-end;height:100%">
+              ${fp && projH>0?`
+                <div style="width:22px;height:${(otherH/maxHM*100)}%;background:var(--t3);border-radius:2px 2px 0 0;min-height:${otherH>0?'1px':'0'}" title="Otros: ${otherH}h"></div>
+                <div style="width:22px;height:${(projH/maxHM*100)}%;background:var(--acc);min-height:2px" title="${pName(fp)}: ${projH}h"></div>
+              `:`
+                <div style="width:22px;height:${h}%;background:var(--bl);border-radius:2px 2px 0 0;min-height:2px" title="${mLabel(k)}: ${d.total}h"></div>
+              `}
+            </div>
+          </div>
+          <div class="chart-lbl">${mLabel(k)}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="cd">
+      <div class="cd-t">Top proyectos por horas <span class="count">${topProj.length}</span></div>
+      ${topProj.map(([p,h])=>`
+        <div class="bar-h">
+          <div class="bar-h-l">${pName(p)}</div>
+          <div class="bar-h-tr"><div class="bar-h-f" style="width:${(h/maxHP*100).toFixed(0)}%;background:var(--bl)">&nbsp;</div></div>
+          <div class="bar-h-v">${h}h</div>
+        </div>`).join('')}
+    </div>
+    <div class="cd">
+      <div class="cd-t">Proyectos simultáneos por mes</div>
+      ${projPerMonth.map(p=>`
+        <div class="bar-h">
+          <div class="bar-h-l">${mLabel(p.m)}</div>
+          <div class="bar-h-tr"><div class="bar-h-f" style="width:${(p.n/Math.max(1,...projPerMonth.map(x=>x.n))*100).toFixed(0)}%;background:var(--pr)">${p.n}</div></div>
+          <div class="bar-h-v">${p.h}h</div>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  ${calibr ? `
+  <div class="cd" style="margin-bottom:16px">
+    <div class="cd-t">Calibración de estimación <span class="count">${calibr.n} cerrados · últimos 6m · est ≥5h</span></div>
+    <div style="font-size:.65rem;color:var(--t3);margin-bottom:14px">Mide qué tan bien estimás. Sesgo = dirección del error · Precisión = magnitud media · Factor = ajuste sugerido</div>
+    <div class="kg" style="margin-bottom:14px">
+      <div class="k">
+        <div class="kl">Sesgo (MPE)</div>
+        <div class="kv ${Math.abs(calibr.sesgo)<10?'c-gn':Math.abs(calibr.sesgo)<25?'c-or':'c-rd'}">${calibr.sesgo>=0?'+':''}${calibr.sesgo.toFixed(0)}%</div>
+        <div class="ks">${calibr.sesgo > 5 ? 'Subestimás' : calibr.sesgo < -5 ? 'Sobrestimás' : 'Calibrado'}</div>
+      </div>
+      <div class="k">
+        <div class="kl">Precisión (MAPE)</div>
+        <div class="kv ${calibr.precision<20?'c-gn':calibr.precision<40?'c-or':'c-rd'}">${calibr.precision.toFixed(0)}%</div>
+        <div class="ks">Error medio absoluto</div>
+      </div>
+      <div class="k">
+        <div class="kl">Factor sugerido</div>
+        <div class="kv c-acc">×${calibr.factor.toFixed(2)}</div>
+        <div class="ks">Multiplicá tus est. por esto</div>
+      </div>
+      <div class="k">
+        <div class="kl">Distribución</div>
+        <div style="display:flex;gap:6px;margin-top:4px;align-items:baseline">
+          <span style="color:var(--gn);font-family:'JetBrains Mono',monospace;font-weight:700">${calibr.acertados}</span>
+          <span style="font-size:.65rem;color:var(--t3)">±20%</span>
+          <span style="color:var(--or);font-family:'JetBrains Mono',monospace;font-weight:700;margin-left:8px">${calibr.subest}</span>
+          <span style="font-size:.65rem;color:var(--t3)">+20%</span>
+          <span style="color:var(--bl);font-family:'JetBrains Mono',monospace;font-weight:700;margin-left:8px">${calibr.sobrest}</span>
+          <span style="font-size:.65rem;color:var(--t3)">−20%</span>
+        </div>
+        <div class="ks">acertados · pasados · sobrados</div>
+      </div>
+    </div>
+    <div style="background:var(--s2);padding:10px 12px;border-radius:6px;font-size:.75rem;color:var(--t2);line-height:1.6">
+      ${calibr.sesgo > 25 ? `<strong style="color:var(--rd)">Subestimás bastante.</strong> Multiplicá tus próximas estimaciones por ${calibr.factor.toFixed(2)} para acercarte a la realidad.` :
+        calibr.sesgo > 10 ? `<strong style="color:var(--or)">Tendés a subestimar.</strong> Considerá ajustar por ${calibr.factor.toFixed(2)}, sobre todo en proyectos parecidos a los pasados.` :
+        calibr.sesgo < -25 ? `<strong style="color:var(--bl)">Sobrestimás bastante.</strong> Te sobra tiempo. Podrías ofrecer entregas más rápidas o ajustar precios hacia abajo.` :
+        calibr.sesgo < -10 ? `<strong style="color:var(--bl)">Tendés a sobrestimar.</strong> Margen sano para imprevistos, pero podrías comprometerte a fechas más cortas.` :
+        `<strong style="color:var(--gn)">Estás bien calibrado.</strong> Tu sesgo es bajo. ${calibr.precision > 30 ? 'Pero la varianza es alta — algunos proyectos los clavás y otros se desvían mucho.' : 'Mantén el método.'}`}
+    </div>
+  </div>` : `
+  <div class="cd" style="margin-bottom:16px">
+    <div class="cd-t">Calibración de estimación</div>
+    <div style="color:var(--t3);font-size:.78rem;padding:8px 0">
+      Necesito al menos 3 proyectos cerrados (sin actividad ≥30 días) con estimación ≥5hs en los últimos 6 meses para calcular el KPI. Por ahora hay ${calibrSet.length}.
+    </div>
+  </div>`}
+
+  <div class="cd" style="margin-bottom:16px">
+    <div class="cd-t">Estimado vs Real <span class="count">${estVsReal.length}</span></div>
+    <div style="font-size:.65rem;color:var(--t3);margin-bottom:10px">Rojo = pasó estimación · Verde = dentro de estimación</div>
+    <div class="tw" style="max-height:350px">
+      <table>
+        <tr><th>Proyecto</th><th class="r">Estimado</th><th class="r">Real</th><th class="r">Diferencia</th><th class="r">Días</th><th class="r">h/día</th></tr>
+        ${estVsReal.map(r=>{
+          const lt = leadTimes.find(l=>l.n===r.n);
+          const overBudget = r.est>0 && r.real > r.est;
+          return `<tr>
+            <td style="font-weight:500">${r.n}</td>
+            <td class="r mono c-t2" style="font-size:.7rem">${r.est||'—'}</td>
+            <td class="r mono" style="font-size:.7rem;color:${overBudget?'var(--rd)':'var(--gn)'}">${r.real}</td>
+            <td class="r"><span class="bg ${overBudget?'bg-rd':'bg-gn'}">${r.diff!==null?r.diff+'%':'—'}</span></td>
+            <td class="r mono c-t2" style="font-size:.7rem">${lt?lt.days:'—'}</td>
+            <td class="r mono c-acc" style="font-size:.7rem">${lt?lt.density:'—'}</td>
+          </tr>`;
+        }).join('')}
+      </table>
+    </div>
+  </div>`;
+}
+
+// ==================== DISPONIBILIDAD ====================
+const CAP_DEFAULTS = {
+  hPerDay: 3,             // horas máximas por día laboral
+  workDays: ['L','M','X','J','V'],  // días que trabajás
+  concOptima: 4,          // concurrencia ideal (informativo)
+  factorPenalizacion: 8,  // % de penalización por cada proyecto extra
+  topePenalizacion: 50,   // % máximo de penalización
+  margenSobrecarga: 50,   // % adicional sobre estimación para considerar activo
+};
+
+function getCapParams() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('puntoCero_capParams') || '{}');
+    return { ...CAP_DEFAULTS, ...saved };
+  } catch { return { ...CAP_DEFAULTS }; }
+}
+function saveCapParams(p) {
+  localStorage.setItem('puntoCero_capParams', JSON.stringify(p));
+}
+
+// Calculate working days in a date range based on configured work days
+function workingDaysInRange(start, end, workDays) {
+  // workDays: array like ['L','M','X','J','V'] - mon, tue, wed, thu, fri
+  // JS getDay(): 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+  const dayMap = ['D','L','M','X','J','V','S'];
+  const wdSet = new Set(workDays);
+  let count = 0;
+  const d = new Date(start);
+  d.setHours(0,0,0,0);
+  const endD = new Date(end);
+  endD.setHours(23,59,59,999);
+  while(d <= endD) {
+    if(wdSet.has(dayMap[d.getDay()])) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
+}
+
+function calcCapacidad() {
+  const P = getCapParams();
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+  const inactivityDays = 30;
+  const cutoffDate = new Date(today.getTime() - inactivityDays * 86400000);
+  const cutoffStr = cutoffDate.toISOString().slice(0,10);
+
+  // Total hours per project + last activity date
+  const hByP = {};
+  const lastActivityByP = {};
+  RAW.horas.filter(h=>h.p&&h.f).forEach(h=>{
+    hByP[h.p]=(hByP[h.p]||0)+h.h;
+    if(!lastActivityByP[h.p] || h.f > lastActivityByP[h.p]) lastActivityByP[h.p] = h.f;
+  });
+  RAW.gas.filter(g=>g.p&&g.f).forEach(g=>{
+    if(!lastActivityByP[g.p] || g.f > lastActivityByP[g.p]) lastActivityByP[g.p] = g.f;
+  });
+  RAW.ing.filter(i=>i.p&&i.f).forEach(i=>{
+    if(!lastActivityByP[i.p] || i.f > lastActivityByP[i.p]) lastActivityByP[i.p] = i.f;
+  });
+
+  // Classify each project
+  const proyectosClasificados = RAW.proy.map(p => {
+    const hReal = hByP[p.id] || 0;
+    const hEst = p.he || 0;
+    const hRest = Math.max(0, hEst - hReal);
+    const tieneFechas = p.fi && p.ff;
+    const lastAct = lastActivityByP[p.id];
+    const sinActividad = !lastAct || lastAct < cutoffStr;
+    const enRango = tieneFechas && p.fi <= todayStr && todayStr <= p.ff;
+    const futuro = tieneFechas && p.fi > todayStr;
+    const pasado = tieneFechas && p.ff < todayStr;
+    const margenFactor = 1 + (P.margenSobrecarga/100);
+    const dentroDelMargen = hEst === 0 || hReal < hEst * margenFactor;
+    
+    let estado;
+    if(futuro) estado = 'futuro';
+    // Sin actividad reciente = cerrado, sin importar las fechas
+    else if(sinActividad && (pasado || enRango)) estado = 'cerrado';
+    else if(enRango && dentroDelMargen) estado = 'activo';
+    else if(enRango && !dentroDelMargen) estado = 'sobrecargado';
+    else if(pasado && !sinActividad && hRest > 0) estado = 'atrasado';
+    else estado = 'cerrado';
+    
+    return {...p, hReal, hRest, estado, lastAct};
+  });
+
+  const activos = proyectosClasificados.filter(p=>p.estado==='activo'||p.estado==='sobrecargado');
+  const atrasados = proyectosClasificados.filter(p=>p.estado==='atrasado');
+  const futuros = proyectosClasificados.filter(p=>p.estado==='futuro');
+
+  // Forecast next 4 months
+  const meses = [];
+  for(let i = 0; i < 4; i++) {
+    const d = new Date(today.getFullYear(), today.getMonth() + i, 1);
+    const ymKey = d.toISOString().slice(0,7);
+    const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    const monthStart = i === 0 ? today : d;
+    
+    // Working days remaining in this month (from today if current month)
+    const workDaysInMonth = workingDaysInRange(monthStart, monthEnd, P.workDays);
+    const techoMes = workDaysInMonth * P.hPerDay;
+    
+    // Projects active in this month
+    const projInMonth = proyectosClasificados.filter(p => {
+      if(!p.fi || !p.ff) return false;
+      if(p.estado === 'cerrado') return false;
+      const fi = new Date(p.fi);
+      const ff = new Date(p.ff);
+      return fi <= monthEnd && ff >= monthStart;
+    });
+    
+    // Hours committed this month: distribute remaining hours over project's working days
+    let comprometidas = 0;
+    projInMonth.forEach(p => {
+      if(p.hRest <= 0) return;
+      const fi = new Date(p.fi);
+      const ff = new Date(p.ff);
+      const totalWorkDays = Math.max(1, workingDaysInRange(fi, ff, P.workDays));
+      const overlapStart = fi > monthStart ? fi : monthStart;
+      const overlapEnd = ff < monthEnd ? ff : monthEnd;
+      const overlapWorkDays = workingDaysInRange(overlapStart, overlapEnd, P.workDays);
+      comprometidas += p.hRest * (overlapWorkDays / totalWorkDays);
+    });
+    
+    const numActivos = projInMonth.filter(p=>p.hRest > 0).length;
+    const penalizacion = Math.min(P.topePenalizacion/100, Math.max(0, (numActivos - 1) * (P.factorPenalizacion/100)));
+    const techoEfectivo = techoMes * (1 - penalizacion);
+    const disponible = Math.max(0, techoEfectivo - comprometidas);
+    
+    meses.push({
+      ymKey, fecha: d, comprometidas, numActivos, penalizacion,
+      techoMes, techoEfectivo, disponible, workDaysInMonth,
+      utilizacion: techoEfectivo > 0 ? comprometidas / techoEfectivo * 100 : 0,
+    });
+  }
+
+  return { activos, atrasados, futuros, meses, proyectosClasificados, params: P };
+}
+
+function renderDisponibilidad() {
+  const cap = calcCapacidad();
+  const P = cap.params;
+  const mesActual = cap.meses[0];
+  const numActivos = cap.activos.length;
+  
+  // Semáforo
+  let semColor, semLabel, semIcon;
+  if(mesActual.disponible < 5) { semColor='var(--rd)'; semLabel='Sin espacio'; semIcon='●'; }
+  else if(mesActual.disponible < 15) { semColor='var(--or)'; semLabel='Margen ajustado'; semIcon='●'; }
+  else { semColor='var(--gn)'; semLabel='Hay espacio'; semIcon='●'; }
+
+  const mesNombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const mLbl = d => `${mesNombres[d.getMonth()]} ${String(d.getFullYear()).slice(2)}`;
+  const maxBar = Math.max(...cap.meses.map(m=>Math.max(m.techoMes,m.comprometidas)));
+
+  const dayNames = [['L','Lun'],['M','Mar'],['X','Mié'],['J','Jue'],['V','Vie'],['S','Sáb'],['D','Dom']];
+
+  return `
+  <div class="kg">
+    <div class="k" style="border-left:3px solid ${semColor}">
+      <div class="kl">Estado del mes</div>
+      <div class="kv" style="color:${semColor};font-size:1.1rem">${semIcon} ${semLabel}</div>
+      <div class="ks">${mesActual.disponible.toFixed(0)}h disponibles</div>
+    </div>
+    <div class="k">
+      <div class="kl">Proyectos activos hoy</div>
+      <div class="kv ${numActivos<=P.concOptima?'c-gn':numActivos<=P.concOptima+2?'c-or':'c-rd'}">${numActivos}</div>
+      <div class="ks">Óptimo: ${P.concOptima}</div>
+    </div>
+    <div class="k">
+      <div class="kl">Penalización concurrencia</div>
+      <div class="kv c-or">${(mesActual.penalizacion*100).toFixed(0)}%</div>
+      <div class="ks">Techo efectivo: ${mesActual.techoEfectivo.toFixed(0)}h</div>
+    </div>
+    <div class="k">
+      <div class="kl">Comprometidas mes</div>
+      <div class="kv">${mesActual.comprometidas.toFixed(0)}h</div>
+      <div class="ks">${mesActual.utilizacion.toFixed(0)}% del techo</div>
+    </div>
+    ${cap.atrasados.length > 0 ? `
+    <div class="k" style="border-left:3px solid var(--rd)">
+      <div class="kl">⚠ Atrasados</div>
+      <div class="kv c-rd">${cap.atrasados.length}</div>
+      <div class="ks">Pasaron fecha de fin</div>
+    </div>` : ''}
+  </div>
+
+  <details class="cd" style="margin-bottom:16px;cursor:pointer" id="capConfigPanel">
+    <summary style="list-style:none;display:flex;align-items:center;gap:8px;font-size:.82rem;font-weight:500;color:var(--t1)">
+      <span style="color:var(--acc)">⚙</span> Configurar parámetros del modelo
+      <span style="font-size:.7rem;color:var(--t3);margin-left:auto">${P.hPerDay}h/día · ${P.workDays.length}d/sem · ${P.factorPenalizacion}% penaliz.</span>
+    </summary>
+    <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+      <div>
+        <label style="font-size:.72rem;color:var(--t2);display:block;margin-bottom:4px">Horas máximas por día laboral</label>
+        <input type="number" id="cap_hPerDay" value="${P.hPerDay}" min="0.5" max="12" step="0.5" style="width:100%;padding:6px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:inherit;font-size:.85rem">
+        <div style="font-size:.65rem;color:var(--t3);margin-top:3px">Hoy: ${P.hPerDay}h. Define el techo: ${P.hPerDay}h × días hábiles del mes</div>
+      </div>
+      <div>
+        <label style="font-size:.72rem;color:var(--t2);display:block;margin-bottom:4px">Días que trabajás</label>
+        <div style="display:flex;gap:4px;margin-top:2px" id="cap_workDays">
+          ${dayNames.map(([k,lbl])=>`
+            <button type="button" class="dayBtn ${P.workDays.includes(k)?'on':''}" data-day="${k}" style="flex:1;padding:5px 0;border-radius:4px;border:1px solid var(--bd);background:${P.workDays.includes(k)?'var(--acc)':'transparent'};color:${P.workDays.includes(k)?'#000':'var(--t2)'};font-size:.7rem;font-family:inherit;cursor:pointer;font-weight:${P.workDays.includes(k)?'700':'400'}">${lbl}</button>
+          `).join('')}
+        </div>
+        <div style="font-size:.65rem;color:var(--t3);margin-top:3px">Tocá los días que trabajás regularmente</div>
+      </div>
+      <div>
+        <label style="font-size:.72rem;color:var(--t2);display:block;margin-bottom:4px">Concurrencia óptima (proyectos)</label>
+        <input type="number" id="cap_concOptima" value="${P.concOptima}" min="1" max="20" step="1" style="width:100%;padding:6px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:inherit;font-size:.85rem">
+        <div style="font-size:.65rem;color:var(--t3);margin-top:3px">Cantidad ideal de proyectos en simultáneo</div>
+      </div>
+      <div>
+        <label style="font-size:.72rem;color:var(--t2);display:block;margin-bottom:4px">Penalización por proyecto extra (%)</label>
+        <input type="number" id="cap_factorPenalizacion" value="${P.factorPenalizacion}" min="0" max="30" step="1" style="width:100%;padding:6px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:inherit;font-size:.85rem">
+        <div style="font-size:.65rem;color:var(--t3);margin-top:3px">% que reduce tu techo por cada proyecto extra al óptimo</div>
+      </div>
+      <div>
+        <label style="font-size:.72rem;color:var(--t2);display:block;margin-bottom:4px">Tope penalización (%)</label>
+        <input type="number" id="cap_topePenalizacion" value="${P.topePenalizacion}" min="10" max="90" step="5" style="width:100%;padding:6px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:inherit;font-size:.85rem">
+        <div style="font-size:.65rem;color:var(--t3);margin-top:3px">Máximo descuento posible</div>
+      </div>
+      <div>
+        <label style="font-size:.72rem;color:var(--t2);display:block;margin-bottom:4px">Margen de sobrecarga (%)</label>
+        <input type="number" id="cap_margenSobrecarga" value="${P.margenSobrecarga}" min="0" max="200" step="10" style="width:100%;padding:6px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:inherit;font-size:.85rem">
+        <div style="font-size:.65rem;color:var(--t3);margin-top:3px">% extra sobre estimación antes de marcar "sobrecargado"</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button type="button" onclick="saveCapConfig()" style="padding:8px 16px;border-radius:6px;border:none;background:var(--acc);color:#000;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer">Guardar y aplicar</button>
+      <button type="button" onclick="resetCapConfig()" style="padding:8px 16px;border-radius:6px;border:1px solid var(--bd);background:var(--s2);color:var(--t1);font-family:inherit;font-size:.8rem;cursor:pointer">Restaurar defaults</button>
+    </div>
+  </details>
+
+  <div class="cd" style="margin-bottom:16px">
+    <div class="cd-t">Próximos 4 meses</div>
+    <div style="font-size:.65rem;color:var(--t3);margin-bottom:12px">Barra = horas comprometidas · Línea naranja = techo efectivo · El techo varía por días hábiles del mes y concurrencia</div>
+    <div style="display:flex;gap:16px;align-items:flex-end;height:160px;padding-bottom:24px;position:relative">
+      ${cap.meses.map((m,i) => {
+        const wComp = (m.comprometidas/maxBar*100);
+        const wTecho = (m.techoEfectivo/maxBar*100);
+        const colorBar = m.utilizacion > 100 ? 'var(--rd)' : m.utilizacion > 70 ? 'var(--or)' : 'var(--bl)';
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;position:relative">
+          <div style="position:relative;width:60px;height:100%;display:flex;align-items:flex-end">
+            <div style="width:100%;height:${wComp}%;background:${colorBar};border-radius:3px 3px 0 0;min-height:2px;position:relative" title="${m.comprometidas.toFixed(0)}h comprometidas">
+              <div style="position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:.7rem;font-family:'JetBrains Mono',monospace;color:${colorBar}">${m.comprometidas.toFixed(0)}h</div>
+            </div>
+            <div style="position:absolute;left:-2px;right:-2px;bottom:${wTecho}%;height:2px;background:var(--or);box-shadow:0 0 4px var(--or)" title="Techo efectivo: ${m.techoEfectivo.toFixed(0)}h"></div>
+          </div>
+          <div style="font-size:.7rem;color:var(--t2);margin-top:8px">${mLbl(m.fecha)}</div>
+          <div style="font-size:.6rem;color:var(--t3);margin-top:2px">${m.workDaysInMonth}d · ${m.numActivos} proy · ${m.disponible.toFixed(0)}h libres</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <div class="cd" style="margin-bottom:16px">
+    <div class="cd-t">¿Puedo aceptar otro proyecto?</div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+      <label style="font-size:.78rem;color:var(--t2)">Horas estimadas del nuevo proyecto:</label>
+      <input type="number" id="newProjHrs" value="20" min="1" max="200" style="width:80px;padding:6px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:inherit;font-size:.85rem" oninput="updateAceptable()">
+      <label style="font-size:.78rem;color:var(--t2);margin-left:8px">Duración (días):</label>
+      <input type="number" id="newProjDays" value="30" min="1" max="365" style="width:80px;padding:6px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:inherit;font-size:.85rem" oninput="updateAceptable()">
+    </div>
+    <div id="aceptableResult" style="padding:12px;background:var(--s2);border-radius:6px;font-size:.82rem"></div>
+  </div>
+
+  <div class="cd">
+    <div class="cd-t">Proyectos abiertos</div>
+    <div class="tw" style="max-height:400px">
+      <table>
+        <tr><th>Proyecto</th><th>Estado</th><th class="r">Inicio</th><th class="r">Fin</th><th class="r">Est.</th><th class="r">Real</th><th class="r">Restante</th></tr>
+        ${[...cap.activos, ...cap.atrasados, ...cap.futuros].sort((a,b)=>(a.fi||'').localeCompare(b.fi||'')).map(p=>{
+          const badge = p.estado==='activo'?'bg-gn':p.estado==='sobrecargado'?'bg-or':p.estado==='atrasado'?'bg-rd':'bg-bl';
+          const icon = p.estado==='activo'?'En curso':p.estado==='sobrecargado'?'Sobrecargado':p.estado==='atrasado'?'Atrasado':'Próximo';
+          return `<tr>
+            <td style="font-weight:500">${p.n}</td>
+            <td><span class="bg ${badge}">${icon}</span></td>
+            <td class="r mono c-t2" style="font-size:.7rem">${p.fi?p.fi.slice(8)+'/'+p.fi.slice(5,7):'—'}</td>
+            <td class="r mono c-t2" style="font-size:.7rem">${p.ff?p.ff.slice(8)+'/'+p.ff.slice(5,7):'—'}</td>
+            <td class="r mono c-t2" style="font-size:.7rem">${p.he||'—'}</td>
+            <td class="r mono" style="font-size:.7rem">${p.hReal||'—'}</td>
+            <td class="r mono c-acc" style="font-size:.7rem">${p.hRest||'—'}</td>
+          </tr>`;
+        }).join('')}
+      </table>
+    </div>
+  </div>`;
+}
+
+window.saveCapConfig = function() {
+  const dayBtns = document.querySelectorAll('#cap_workDays .dayBtn.on');
+  const workDays = [...dayBtns].map(b => b.getAttribute('data-day'));
+  const newP = {
+    hPerDay: parseFloat(document.getElementById('cap_hPerDay').value) || 3,
+    workDays: workDays.length > 0 ? workDays : ['L','M','X','J','V'],
+    concOptima: parseInt(document.getElementById('cap_concOptima').value) || 4,
+    factorPenalizacion: parseFloat(document.getElementById('cap_factorPenalizacion').value) || 8,
+    topePenalizacion: parseFloat(document.getElementById('cap_topePenalizacion').value) || 50,
+    margenSobrecarga: parseFloat(document.getElementById('cap_margenSobrecarga').value) || 50,
+  };
+  saveCapParams(newP);
+  // Re-render maintaining open state of details
+  const wasOpen = document.getElementById('capConfigPanel')?.open;
+  render();
+  setTimeout(()=>{
+    const panel = document.getElementById('capConfigPanel');
+    if(panel && wasOpen) panel.open = true;
+    if(window.updateAceptable) window.updateAceptable();
+  }, 50);
+};
+
+window.resetCapConfig = function() {
+  if(!confirm('¿Restaurar valores por defecto?')) return;
+  saveCapParams(CAP_DEFAULTS);
+  render();
+  setTimeout(()=>{
+    const panel = document.getElementById('capConfigPanel');
+    if(panel) panel.open = true;
+    if(window.updateAceptable) window.updateAceptable();
+  }, 50);
+};
+
+window.updateAceptable = function() {
+  const hrs = parseFloat(document.getElementById('newProjHrs').value) || 0;
+  const days = parseFloat(document.getElementById('newProjDays').value) || 30;
+  const cap = calcCapacidad();
+  const today = new Date();
+  
+  // Distribute hours over days, see which months would be affected
+  const P = cap.params;
+  const mesesAfectados = [];
+  for(let i = 0; i < 4; i++) {
+    const d = new Date(today.getFullYear(), today.getMonth() + i, 1);
+    const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    const monthStart = i === 0 ? today : d;
+    const startProj = today;
+    const endProj = new Date(today.getTime() + days * 86400000);
+    
+    if(startProj > monthEnd || endProj < monthStart) continue;
+    
+    const overlapStart = startProj > monthStart ? startProj : monthStart;
+    const overlapEnd = endProj < monthEnd ? endProj : monthEnd;
+    // Use working days for distribution
+    const totalWorkDays = Math.max(1, workingDaysInRange(startProj, endProj, P.workDays));
+    const overlapWorkDays = workingDaysInRange(overlapStart, overlapEnd, P.workDays);
+    const hrsEnMes = hrs * (overlapWorkDays / totalWorkDays);
+    
+    // Add 1 to concurrency for the new project
+    const newNumActivos = cap.meses[i].numActivos + 1;
+    const newPenalizacion = Math.min(P.topePenalizacion/100, Math.max(0, (newNumActivos - 1) * (P.factorPenalizacion/100)));
+    const newTechoEfectivo = cap.meses[i].techoMes * (1 - newPenalizacion);
+    const newComprometidas = cap.meses[i].comprometidas + hrsEnMes;
+    const newDisponible = newTechoEfectivo - newComprometidas;
+    
+    mesesAfectados.push({
+      mes: cap.meses[i],
+      hrsEnMes,
+      newNumActivos,
+      newTechoEfectivo,
+      newComprometidas,
+      newDisponible,
+      utilizacion: newTechoEfectivo > 0 ? newComprometidas / newTechoEfectivo * 100 : 0,
+    });
+  }
+  
+  const overflow = mesesAfectados.some(m => m.newDisponible < 0);
+  const tightFit = mesesAfectados.some(m => m.newDisponible < 5 && m.newDisponible >= 0);
+  const mesNombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  
+  let veredicto, color;
+  if(overflow) { veredicto = 'No entra'; color = 'var(--rd)'; }
+  else if(tightFit) { veredicto = 'Entra justo'; color = 'var(--or)'; }
+  else { veredicto = 'Entra cómodo'; color = 'var(--gn)'; }
+  
+  const detalle = mesesAfectados.map(m => {
+    const c = m.newDisponible < 0 ? 'var(--rd)' : m.newDisponible < 5 ? 'var(--or)' : 'var(--gn)';
+    const lbl = mesNombres[m.mes.fecha.getMonth()]+' '+String(m.mes.fecha.getFullYear()).slice(2);
+    return `<span style="color:${c}">${lbl}: ${m.hrsEnMes.toFixed(0)}h nuevas → ${m.newDisponible >= 0 ? m.newDisponible.toFixed(0) : '−'+Math.abs(m.newDisponible).toFixed(0)}h libres (${m.utilizacion.toFixed(0)}%)</span>`;
+  }).join(' · ');
+  
+  document.getElementById('aceptableResult').innerHTML = `
+    <div style="font-size:.95rem;font-weight:700;color:${color};margin-bottom:6px">${veredicto}</div>
+    <div style="font-size:.72rem;color:var(--t2);line-height:1.7">${detalle}</div>
+  `;
+};
+
+function renderPipeline() {
+  const fp = FILTERS.proj;
+  const isFiltered = fp || FILTERS.year !== 'all' || FILTERS.months.size > 0;
+  let cot;
+  if(isFiltered) {
+    const projIds = new Set(FILTERED.proy.map(p=>p.id));
+    // Include cotization if: matches by date directly, OR is for a project with activity, OR (has no date and no activity ⇒ include if project filter is just 'todo')
+    cot = RAW.cot.filter(c => {
+      // Filter by project if explicit
+      if(fp && c.p !== fp) return false;
+      // If cotization has its own date, use that
+      if(c.f) return matchFilter(c.f);
+      // No date: include if project has activity in period, OR if it's a still-open status (Enviado/Potencial)
+      if(['Enviado','Potencial'].includes(c.e)) return true;
+      return projIds.has(c.p);
+    });
+  } else {
+    cot = RAW.cot;
+  }
+  const cotA = cot.filter(c=>c.e==='Aceptado');
+  const cotR = cot.filter(c=>c.e==='Rechazado');
+  const cotE = cot.filter(c=>c.e==='Enviado');
+  const cotP = cot.filter(c=>c.e==='Potencial');
+  const tasa = cotA.length+cotR.length>0?((cotA.length/(cotA.length+cotR.length))*100).toFixed(0):'—';
+
+  const grupos = [
+    {e:'Potencial',bg:'bg-gy',items:cotP},
+    {e:'Enviado',bg:'bg-or',items:cotE},
+    {e:'Aceptado',bg:'bg-gn',items:cotA},
+    {e:'Rechazado',bg:'bg-rd',items:cotR},
+  ];
+
+  return `
+  <div class="kg">
+    <div class="k"><div class="kl">Total cotizaciones</div><div class="kv c-bl">${cot.length}</div></div>
+    <div class="k"><div class="kl">Aceptadas</div><div class="kv c-gn">${cotA.length}</div><div class="ks">${fmt(cotA.reduce((s,c)=>s+c.m,0))}</div></div>
+    <div class="k"><div class="kl">Rechazadas</div><div class="kv c-rd">${cotR.length}</div><div class="ks">${fmt(cotR.reduce((s,c)=>s+c.m,0))}</div></div>
+    <div class="k"><div class="kl">Enviadas</div><div class="kv c-or">${cotE.length}</div><div class="ks">${fmt(cotE.reduce((s,c)=>s+c.m,0))}</div></div>
+    <div class="k"><div class="kl">Conversión</div><div class="kv c-acc">${tasa}%</div></div>
+  </div>
+  ${grupos.map(g=>`
+    <div class="cd" style="margin-bottom:12px">
+      <div class="cd-t"><span class="bg ${g.bg}">${g.e}</span> <span class="count">${g.items.length} · ${fmt(g.items.reduce((s,c)=>s+c.m,0))}</span></div>
+      ${g.items.length>0?`<div class="tw" style="max-height:220px">
+        <table>
+          <tr><th>Proyecto</th><th class="r">Monto</th></tr>
+          ${g.items.sort((a,b)=>b.m-a.m).map(c=>`<tr><td>${c.n||pName(c.p)}</td><td class="r mono" style="font-size:.72rem">${c.m?fmt(c.m):'—'}</td></tr>`).join('')}
+        </table>
+      </div>`:'<div style="color:var(--t3);font-size:.78rem;padding:8px 0">Sin cotizaciones</div>'}
+    </div>`).join('')}`;
+}
+
+// ==================== DEMO DATA ====================
+function loadDemo() {
+  // Same data we had before, embedded
+  RAW.proy = [
+    {id:"PROY-0690f822",n:"Trípode Georgina",fi:"2025-01-13",ff:"2025-02-24",he:16},
+    {id:"PROY-ce38267b",n:"Espaldar Mica",fi:"2025-02-13",ff:"2025-06-08",he:12},
+    {id:"PROY-d4708d97",n:"Estructura Shibari",fi:"2025-01-20",ff:"2025-03-05",he:8},
+    {id:"PROY-c978a468",n:"Trapecio Ara",fi:"2025-02-13",ff:"2025-03-28",he:8},
+    {id:"PROY-62822412",n:"Malvin Kids",fi:"2025-01-07",ff:"2025-02-25",he:20},
+    {id:"PROY-639a0109",n:"Mesa para Cami",fi:"2025-01-27",ff:"2025-02-06",he:8},
+    {id:"PROY-727ecbdb",n:"Rodo Nebular",fi:"2025-01-14",ff:"2025-02-10",he:10},
+    {id:"PROY-56d8426c",n:"Trineo Matías",fi:"2025-02-20",ff:"2025-03-19",he:0},
+    {id:"PROY-95834511",n:"ClubSocialLapaz",fi:"2025-03-19",ff:"2025-04-26",he:25},
+    {id:"PROY-c7f01ea7",n:"Trípode Fede Otegui",fi:"2025-03-28",ff:"2025-04-28",he:19},
+    {id:"PROY-28ef93a2",n:"Reparación portón JP",fi:"2025-05-06",ff:"2025-05-09",he:3},
+    {id:"PROY-ec3850b2",n:"Espaldares Inst. Yoga",fi:"2025-05-12",ff:"2025-06-21",he:40},
+    {id:"PROY-eb0efc5a",n:"Viga Taboba",fi:"2025-06-09",ff:"2025-06-14",he:16},
+    {id:"PROY-3d831130",n:"Puerta/ventanas Juampa",fi:"2025-06-26",ff:"2025-07-16",he:40},
+    {id:"PROY-33f97da4",n:"Reja Javi",fi:"2025-06-27",ff:"2025-07-15",he:8},
+    {id:"PROY-1684d56d",n:"Jaula AC Javi",fi:"2025-07-02",ff:"2025-08-13",he:12},
+    {id:"PROY-ca6b13e2",n:"Ménsulas Javi",fi:"2025-07-08",ff:"2025-07-15",he:4},
+    {id:"PROY-348a0c6b",n:"Boxs Baño Garrido",fi:"2025-07-09",ff:"2025-10-03",he:24},
+    {id:"PROY-91a7ae88",n:"Trípode Belén",fi:"2025-07-21",ff:"2025-09-10",he:24},
+    {id:"PROY-bc54ea8d",n:"Pto anclaje escalera",fi:"2025-08-01",ff:"2025-09-03",he:8},
+    {id:"PROY-3d91a8a4",n:"Rep. trape y aro",fi:"2025-08-02",ff:"2025-11-07",he:8},
+    {id:"PROY-9862993d",n:"Pto anclaje Pablo",fi:"2025-08-05",ff:"2025-08-22",he:5},
+    {id:"PROY-e2cd894b",n:"Pto anclaje casa+aro",fi:"2025-08-07",ff:"2025-09-11",he:12},
+    {id:"PROY-b7ce2a4a",n:"Rejas Flia Nacho",fi:"2025-08-15",ff:"2025-09-19",he:16},
+    {id:"PROY-76f2b2bd",n:"FIDAE circo",fi:"2025-08-27",ff:"2025-10-12",he:40},
+    {id:"PROY-7f822a95",n:"Shibari 2",fi:"2025-10-13",ff:"2025-11-03",he:8},
+    {id:"PROY-e6bb8c71",n:"Trípode Irene K.",fi:"2025-11-21",ff:"2025-12-08",he:18},
+    {id:"PROY-68677fac",n:"Trípode Flo Gonella",fi:"2025-11-25",ff:"2025-12-23",he:19},
+    {id:"PROY-8570126b",n:"Estructura hamaca",fi:"2025-11-26",ff:"2025-12-19",he:18},
+    {id:"PROY-9e265eb0",n:"Cundo pto anclaje",fi:"2025-11-28",ff:"2025-12-06",he:7},
+    {id:"PROY-3499213d",n:"Estructura Vera",fi:"2025-11-25",ff:"2025-11-30",he:1},
+    {id:"PROY-796d1b04",n:"Ménsulas Flavia",fi:"2025-11-21",ff:"2025-11-27",he:3},
+    {id:"PROY-493194ce",n:"Mechas duende",fi:"2025-11-07",ff:"2025-11-27",he:1},
+    {id:"PROY-754b2f79",n:"FLYSCH",fi:"2026-01-19",ff:"2026-06-30",he:80},
+    {id:"PROY-e6af68e6",n:"Trípode Andrés",fi:"2026-01-13",ff:"2026-02-04",he:16},
+    {id:"PROY-4c37caca",n:"Trípode Arte Infernal",fi:"2026-01-20",ff:"2026-02-23",he:15},
+    {id:"PROY-2b9d4310",n:"José Menchaca",fi:"2026-03-11",ff:"2026-03-24",he:15},
+    {id:"PROY-d0a95ef2",n:"Rodo columnas puerta",fi:"2026-04-15",ff:"2026-05-18",he:0},
+    {id:"PROY-3c4c1eed",n:"JP 10 ventanas",fi:"2026-03-23",ff:"2026-05-12",he:32},
+    {id:"PROY-22edd47d",n:"Tapas Nico Carabelas",fi:"2026-04-27",ff:"2026-05-08",he:20},
+  ];
+
+  // For demo, use the same gas/ing/cot/horas from the artifact (abbreviated - use full data in production via Sheet)
+  // We'll load from sheet for real usage
+  RAW.gas = DEMO_GASTOS;
+  RAW.ing = DEMO_INGRESOS;
+  RAW.cot = DEMO_COTIZ;
+  RAW.horas = DEMO_HORAS;
+  RAW.provLookup = {}; // Demo already has names, not IDs
+
+  IS_DEMO = true;
+  setStatus('demo');
+  buildFilterUI();
+  applyFilters();
+}
+
+// ==================== CONFIG HARDCODED ====================
+const SHEET_ID = '1vPaajJoqCHCtRSbTvH97Byck3FxhbuOy';
+const SHEET_NAMES = {
+  proy: 'Proyectos',
+  gas: 'Gastos',
+  ing: 'Ingresos',
+  cot: 'Cotizaciones',
+  horas: 'Horas Trabajadas',
+  proveedores: 'Proveedores',
+};
+
+// ==================== INIT ====================
+window.addEventListener('DOMContentLoaded', () => {
+  // Guardar config hardcodeada y cargar directo
+  saveCfg({ sheetId: SHEET_ID, sheets: SHEET_NAMES });
+  loadData();
+});
+
+// Demo data arrays (populated inline to keep file self-contained)
+const DEMO_INGRESOS = [
+{f:"2025-01-13",p:"PROY-0690f822",m:16250},{f:"2025-01-20",p:"PROY-d4708d97",m:7250},{f:"2025-01-22",p:"PROY-c978a468",m:3167},
+{f:"2025-02-06",p:"PROY-639a0109",m:5840},{f:"2025-02-07",p:"PROY-62822412",m:19500},{f:"2025-02-19",p:"PROY-727ecbdb",m:9500},
+{f:"2025-02-24",p:"PROY-0690f822",m:15250},{f:"2025-02-26",p:"PROY-62822412",m:19500},{f:"2025-03-07",p:"PROY-d4708d97",m:7250},
+{f:"2025-03-25",p:"PROY-56d8426c",m:4000},{f:"2025-03-28",p:"PROY-c7f01ea7",m:16250},{f:"2025-03-31",p:"PROY-c978a468",m:4333},
+{f:"2025-03-31",p:"PROY-95834511",m:28225},{f:"2025-04-28",p:"PROY-95834511",m:28225},{f:"2025-04-28",p:"PROY-c7f01ea7",m:16250},
+{f:"2025-05-08",p:"PROY-28ef93a2",m:3000},{f:"2025-05-12",p:"PROY-ec3850b2",m:37000},{f:"2025-06-16",p:"PROY-eb0efc5a",m:14189},
+{f:"2025-06-16",p:"PROY-ce38267b",m:2230},{f:"2025-06-25",p:"PROY-ec3850b2",m:37000},{f:"2025-06-26",p:"PROY-3d831130",m:21000},
+{f:"2025-07-15",p:"PROY-33f97da4",m:7500},{f:"2025-07-15",p:"PROY-ca6b13e2",m:5000},{f:"2025-07-15",p:"PROY-348a0c6b",m:15000},
+{f:"2025-07-16",p:"PROY-3d831130",m:21000},{f:"2025-07-21",p:"PROY-91a7ae88",m:16250},{f:"2025-08-11",p:"PROY-9862993d",m:3500},
+{f:"2025-08-14",p:"PROY-3d91a8a4",m:1700},{f:"2025-08-18",p:"PROY-bc54ea8d",m:3000},{f:"2025-08-19",p:"PROY-b7ce2a4a",m:24370},
+{f:"2025-08-22",p:"PROY-e2cd894b",m:5250},{f:"2025-08-22",p:"PROY-9862993d",m:3500},{f:"2025-09-05",p:"PROY-bc54ea8d",m:2500},
+{f:"2025-09-10",p:"PROY-91a7ae88",m:16250},{f:"2025-09-11",p:"PROY-e2cd894b",m:5250},{f:"2025-09-23",p:"PROY-b7ce2a4a",m:24370},
+{f:"2025-09-26",p:"PROY-76f2b2bd",m:30000},{f:"2025-10-07",p:"PROY-76f2b2bd",m:2000},{f:"2025-10-13",p:"PROY-76f2b2bd",m:30000},
+{f:"2025-10-14",p:"PROY-7f822a95",m:7500},{f:"2025-10-16",p:"PROY-348a0c6b",m:46000},{f:"2025-10-16",p:"PROY-1684d56d",m:9700},
+{f:"2025-10-16",p:"PROY-ca6b13e2",m:800},{f:"2025-11-04",p:"PROY-7f822a95",m:7500},{f:"2025-11-21",p:"PROY-e6bb8c71",m:18000},
+{f:"2025-11-26",p:"PROY-8570126b",m:7500},{f:"2025-11-27",p:"PROY-796d1b04",m:1500},{f:"2025-12-03",p:"PROY-68677fac",m:16000},
+{f:"2025-12-06",p:"PROY-9e265eb0",m:7500},{f:"2025-12-09",p:"PROY-e6bb8c71",m:18000},{f:"2025-12-11",p:"PROY-3499213d",m:1500},
+{f:"2025-12-20",p:"PROY-68677fac",m:16500},{f:"2025-12-22",p:"PROY-8570126b",m:7500},{f:"2026-01-13",p:"PROY-e6af68e6",m:16250},
+{f:"2026-01-14",p:"PROY-493194ce",m:1300},{f:"2026-01-20",p:"PROY-4c37caca",m:17930},{f:"2026-02-11",p:"PROY-e6af68e6",m:16250},
+{f:"2026-02-25",p:"PROY-4c37caca",m:13062},{f:"2026-03-23",p:"PROY-3c4c1eed",m:22500},{f:"2026-03-25",p:"PROY-2b9d4310",m:17000},
+];
+
+const DEMO_GASTOS = [
+{f:"2025-01-06",r:"Alquiler",m:6000,p:"",prov:"Brecha",e:"Fijo"},{f:"2025-01-16",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2025-01-17",r:"Insumos",m:4820,p:"PROY-0690f822",prov:"Hierros Sabatini",e:"Variable"},{f:"2025-01-17",r:"Insumos",m:1302,p:"PROY-ce38267b",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-01-17",r:"Insumos",m:928,p:"PROY-ce38267b",prov:"Hierros Sabatini",e:"Variable"},{f:"2025-01-17",r:"Insumos",m:2154,p:"PROY-d4708d97",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-01-20",r:"Insumos",m:651,p:"PROY-d4708d97",prov:"Hierros Sabatini",e:"Variable"},{f:"2025-01-22",r:"Insumos",m:2668,p:"PROY-c978a468",prov:"Silkum",e:"Variable"},
+{f:"2025-01-22",r:"Insumos",m:2668,p:"",prov:"Silkum",e:"Variable"},{f:"2025-01-29",r:"Herramientas",m:547,p:"",prov:"Uruimporta",e:"Variable"},
+{f:"2025-01-29",r:"Herramientas",m:1308,p:"",prov:"Supercenter",e:"Variable"},{f:"2025-01-31",r:"Insumos",m:2573,p:"PROY-639a0109",prov:"Barraca Parana",e:"Variable"},
+{f:"2025-01-31",r:"Insumos",m:733,p:"PROY-639a0109",prov:"La chispa",e:"Variable"},{f:"2025-02-04",r:"Insumos",m:1399,p:"",prov:"Uruimporta",e:"Variable"},
+{f:"2025-02-05",r:"Marketing/Publicidad",m:616,p:"",prov:"Meta",e:"Variable"},{f:"2025-02-07",r:"Alquiler",m:7000,p:"",prov:"Brecha",e:"Fijo"},
+{f:"2025-02-20",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},{f:"2025-02-21",r:"Insumos",m:1435,p:"PROY-0690f822",prov:"Proamar",e:"Variable"},
+{f:"2025-02-23",r:"Insumos",m:4016,p:"PROY-62822412",prov:"Hierros Sabatini",e:"Variable"},{f:"2025-02-24",r:"Insumos",m:2800,p:"PROY-62822412",prov:"Servicios Mvd",e:"Variable"},
+{f:"2025-02-26",r:"Honorarios/Mano de Obra Externa",m:5000,p:"PROY-62822412",prov:"Stevens Borba",e:"Variable"},
+{f:"2025-03-06",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},{f:"2025-03-13",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2025-04-03",r:"Insumos",m:10967,p:"PROY-95834511",prov:"Hierros Sabatini",e:"Variable"},{f:"2025-04-03",r:"Insumos",m:4720,p:"PROY-c7f01ea7",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-04-07",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},{f:"2025-04-07",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2025-04-25",r:"Insumos",m:3076,p:"PROY-95834511",prov:"Casa tornillo",e:"Variable"},{f:"2025-04-26",r:"Logistica",m:1600,p:"PROY-95834511",prov:"Fletes Mvd",e:"Variable"},
+{f:"2025-04-27",r:"Honorarios/Mano de Obra Externa",m:4000,p:"PROY-95834511",prov:"Stevens",e:"Variable"},
+{f:"2025-05-09",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},{f:"2025-05-14",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2025-05-26",r:"Insumos",m:7915,p:"PROY-ec3850b2",prov:"Hierros Sabatini",e:"Variable"},{f:"2025-05-30",r:"Insumos",m:5522,p:"PROY-ec3850b2",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-05-30",r:"Insumos",m:3569,p:"PROY-eb0efc5a",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-06-04",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},{f:"2025-06-09",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},
+{f:"2025-06-08",r:"Insumos",m:4261,p:"PROY-ec3850b2",prov:"Casa tornillo",e:"Variable"},
+{f:"2025-06-23",r:"Honorarios/Mano de Obra Externa",m:3500,p:"PROY-ec3850b2",prov:"M. Cigliutti",e:"Variable"},
+{f:"2025-07-04",r:"Insumos",m:9751,p:"PROY-3d831130",prov:"Hierros Sabatini",e:"Variable"},{f:"2025-07-04",r:"Insumos",m:2287,p:"PROY-33f97da4",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-07-04",r:"Insumos",m:2583,p:"PROY-1684d56d",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-07-08",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},{f:"2025-07-08",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2025-07-17",r:"Insumos",m:6527,p:"PROY-348a0c6b",prov:"Coronato",e:"Variable"},{f:"2025-07-23",r:"Insumos",m:4209,p:"PROY-348a0c6b",prov:"Coronato",e:"Variable"},
+{f:"2025-08-07",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},{f:"2025-08-08",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},
+{f:"2025-08-20",r:"Insumos",m:12646,p:"PROY-b7ce2a4a",prov:"Hierros Sabatini",e:"Variable"},{f:"2025-08-20",r:"Insumos",m:3444,p:"PROY-91a7ae88",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-09-08",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},{f:"2025-09-10",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2025-09-12",r:"Insumos",m:7105,p:"PROY-348a0c6b",prov:"Barraca Parana",e:"Variable"},
+{f:"2025-09-16",r:"Insumos",m:4850,p:"PROY-348a0c6b",prov:"Famiq",e:"Variable"},
+{f:"2025-09-23",r:"Insumos",m:9249,p:"PROY-76f2b2bd",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-10-08",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},{f:"2025-10-08",r:"Software/Licencias",m:200,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2025-10-08",r:"Impuestos y Tasas",m:1279,p:"",prov:"BPS",e:"Fijo"},
+{f:"2025-10-29",r:"Insumos",m:2533,p:"PROY-7f822a95",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-11-10",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},{f:"2025-11-17",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2025-12-03",r:"Insumos",m:3943,p:"PROY-e6bb8c71",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2025-12-08",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},{f:"2025-12-08",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2025-12-08",r:"Honorarios/Mano de Obra Externa",m:3000,p:"PROY-e6bb8c71",prov:"Guille+Estefani",e:"Variable"},
+{f:"2025-12-10",r:"Impuestos y Tasas",m:2098,p:"",prov:"BPS",e:"Fijo"},
+{f:"2025-12-19",r:"Insumos",m:2688,p:"PROY-68677fac",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2026-01-09",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Fijo"},{f:"2026-01-09",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2026-01-13",r:"Impuestos y Tasas",m:1019,p:"",prov:"BPS",e:"Fijo"},
+{f:"2026-01-20",r:"Insumos",m:3034,p:"PROY-e6af68e6",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2026-01-20",r:"Insumos",m:3034,p:"PROY-4c37caca",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2026-02-10",r:"Alquiler",m:6500,p:"",prov:"Brecha",e:"Variable"},
+{f:"2026-02-13",r:"Insumos",m:12718,p:"PROY-754b2f79",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2026-02-25",r:"Impuestos y Tasas",m:1092,p:"",prov:"BPS",e:"Fijo"},
+{f:"2026-03-10",r:"Alquiler",m:7000,p:"",prov:"Brecha",e:"Fijo"},{f:"2026-03-10",r:"Software/Licencias",m:225,p:"",prov:"Appsheet",e:"Fijo"},
+{f:"2026-03-18",r:"Insumos",m:5242,p:"PROY-2b9d4310",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2026-04-06",r:"Insumos",m:14497,p:"PROY-3c4c1eed",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2026-04-10",r:"Alquiler",m:7000,p:"",prov:"Brecha",e:"Fijo"},
+{f:"2026-04-29",r:"Insumos",m:2660,p:"PROY-3c4c1eed",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2026-04-29",r:"Insumos",m:1256,p:"PROY-22edd47d",prov:"Hierros Sabatini",e:"Variable"},
+{f:"2026-05-05",r:"Impuestos y Tasas",m:2274,p:"",prov:"BPS",e:"Fijo"},
+{f:"2026-05-08",r:"Insumos",m:2702,p:"PROY-22edd47d",prov:"Sodimac",e:"Variable"},
+];
+
+const DEMO_COTIZ = [
+{p:"PROY-0690f822",n:"Trípode Georgina",m:31500,e:"Aceptado"},{p:"PROY-727ecbdb",n:"Rodo Nebular",m:9500,e:"Aceptado"},
+{p:"PROY-95834511",n:"ClubSocialLapaz",m:56450,e:"Aceptado"},{p:"PROY-d4708d97",n:"Estructura Shibari",m:14500,e:"Aceptado"},
+{p:"PROY-e2cd894b",n:"Pto anclaje+aro",m:10500,e:"Aceptado"},{p:"PROY-647f4554",n:"Piso Tincho",m:48550,e:"Rechazado"},
+{p:"PROY-ce38267b",n:"Espaldar Mica",m:2230,e:"Aceptado"},{p:"PROY-62822412",n:"Malvin Kids",m:39000,e:"Aceptado"},
+{p:"PROY-639a0109",n:"Mesa para Cami",m:5840,e:"Aceptado"},{p:"PROY-c978a468",n:"Trapecio Ara",m:7500,e:"Aceptado"},
+{p:"PROY-56d8426c",n:"Trineo Matías",m:4000,e:"Aceptado"},{p:"PROY-ec3850b2",n:"Espaldares Yoga",m:74000,e:"Aceptado"},
+{p:"PROY-eb0efc5a",n:"Viga Taboba",m:14189,e:"Aceptado"},{p:"PROY-bc54ea8d",n:"Pto anclaje escalera",m:5500,e:"Aceptado"},
+{p:"PROY-d71673ac",n:"Trípode Euge",m:35500,e:"Rechazado"},{p:"PROY-c7f01ea7",n:"Trípode Fede Otegui",m:32500,e:"Aceptado"},
+{p:"PROY-3a5c8dd0",n:"Barra y portón JP",m:8000,e:"Rechazado"},{p:"PROY-28ef93a2",n:"Rep. portón JP",m:3000,e:"Aceptado"},
+{p:"PROY-66a0b6bc",n:"Sala telas PdE",m:145000,e:"Rechazado"},{p:"PROY-3063e2a9",n:"Tati las piedras",m:39000,e:"Rechazado"},
+{p:"PROY-3d831130",n:"Puerta/ventanas Juampa",m:42000,e:"Aceptado"},{p:"PROY-33f97da4",n:"Reja Javi",m:7500,e:"Aceptado"},
+{p:"PROY-1684d56d",n:"Jaula AC Javi",m:9700,e:"Aceptado"},{p:"PROY-348a0c6b",n:"Boxs Baño Garrido",m:61000,e:"Aceptado"},
+{p:"PROY-ca6b13e2",n:"Ménsulas Javi",m:5800,e:"Aceptado"},{p:"PROY-91a7ae88",n:"Trípode Belén",m:32500,e:"Aceptado"},
+{p:"PROY-3d91a8a4",n:"Rep. trape y aro",m:4300,e:"Aceptado"},{p:"PROY-9862993d",n:"Pto anclaje Pablo",m:7000,e:"Aceptado"},
+{p:"PROY-b7ce2a4a",n:"Rejas Flia Nacho",m:48740,e:"Aceptado"},{p:"PROY-4e3eb4f9",n:"Reja Javi 2",m:6500,e:"Rechazado"},
+{p:"PROY-76f2b2bd",n:"FIDAE circo",m:62000,e:"Aceptado"},{p:"PROY-7f822a95",n:"Shibari 2",m:15000,e:"Aceptado"},
+{p:"PROY-e6bb8c71",n:"Trípode Irene K.",m:36000,e:"Aceptado"},{p:"PROY-9e265eb0",n:"Cundo pto anclaje",m:7500,e:"Aceptado"},
+{p:"PROY-68677fac",n:"Trípode Flo Gonella",m:32500,e:"Aceptado"},{p:"PROY-8570126b",n:"Estructura hamaca",m:15000,e:"Aceptado"},
+{p:"PROY-51c05752",n:"Estructura telas",m:24000,e:"Rechazado"},{p:"PROY-796d1b04",n:"Ménsulas Flavia",m:1500,e:"Aceptado"},
+{p:"PROY-3499213d",n:"Estructura Vera",m:1500,e:"Aceptado"},{p:"PROY-493194ce",n:"Mechas duende",m:1000,e:"Aceptado"},
+{p:"PROY-754b2f79",n:"FLYSCH",m:246000,e:"Aceptado"},{p:"PROY-4c37caca",n:"Trípode Arte Infernal",m:30992,e:"Aceptado"},
+{p:"PROY-e6af68e6",n:"Trípode Andrés",m:32500,e:"Aceptado"},{p:"PROY-e2838e1a",n:"Telón Va a caer",m:24500,e:"Rechazado"},
+{p:"PROY-d0a95ef2",n:"Rodo columnas puerta",m:3000,e:"Aceptado"},{p:"PROY-c332063e",n:"Barra Tincho",m:0,e:"Potencial"},
+{p:"PROY-27d2c1bd",n:"Muebles Rodo",m:0,e:"Potencial"},{p:"PROY-3c4c1eed",n:"JP 10 ventanas",m:45000,e:"Aceptado"},
+{p:"PROY-d20a8b51",n:"Espaldar Paula",m:0,e:"Potencial"},{p:"PROY-2b9d4310",n:"José Menchaca",m:17000,e:"Aceptado"},
+{p:"PROY-8df78391",n:"Portal Bosque",m:110000,e:"Rechazado"},{p:"PROY-7cc9b720",n:"Pole dance con Base",m:0,e:"Potencial"},
+{p:"PROY-ffb8052c",n:"Vigas Club Médanos",m:44000,e:"Enviado"},{p:"PROY-22edd47d",n:"Tapas Nico Carabelas",m:21600,e:"Aceptado"},
+];
+
+const DEMO_HORAS = [
+{f:"2025-01-20",p:"",h:3},{f:"2025-01-21",p:"PROY-62822412",h:2},{f:"2025-01-23",p:"PROY-727ecbdb",h:2},
+{f:"2025-01-27",p:"PROY-639a0109",h:1},{f:"2025-01-27",p:"PROY-0690f822",h:1},{f:"2025-01-29",p:"PROY-0690f822",h:3},
+{f:"2025-01-31",p:"PROY-639a0109",h:3},{f:"2025-02-03",p:"PROY-639a0109",h:3},{f:"2025-02-04",p:"PROY-639a0109",h:2},
+{f:"2025-02-05",p:"PROY-639a0109",h:3},{f:"2025-02-07",p:"PROY-727ecbdb",h:2},{f:"2025-02-08",p:"PROY-727ecbdb",h:8},
+{f:"2025-02-10",p:"PROY-727ecbdb",h:2},{f:"2025-02-12",p:"PROY-0690f822",h:1},{f:"2025-02-13",p:"PROY-0690f822",h:2},
+{f:"2025-02-15",p:"PROY-0690f822",h:2},{f:"2025-02-17",p:"PROY-0690f822",h:2},{f:"2025-02-18",p:"PROY-0690f822",h:2},
+{f:"2025-02-19",p:"PROY-0690f822",h:3},{f:"2025-02-20",p:"PROY-0690f822",h:2},{f:"2025-02-21",p:"PROY-0690f822",h:3},
+{f:"2025-02-23",p:"PROY-0690f822",h:2},{f:"2025-02-23",p:"PROY-62822412",h:3},{f:"2025-02-24",p:"PROY-62822412",h:4},
+{f:"2025-02-25",p:"PROY-62822412",h:12},{f:"2025-03-03",p:"PROY-d4708d97",h:4},{f:"2025-03-04",p:"PROY-d4708d97",h:3},
+{f:"2025-03-18",p:"PROY-c978a468",h:1},{f:"2025-03-25",p:"PROY-c978a468",h:2},{f:"2025-03-27",p:"PROY-c978a468",h:1},
+{f:"2025-04-14",p:"PROY-c7f01ea7",h:7},{f:"2025-04-15",p:"PROY-c7f01ea7",h:4},{f:"2025-04-21",p:"PROY-c7f01ea7",h:3},
+{f:"2025-04-22",p:"PROY-c7f01ea7",h:3},{f:"2025-04-23",p:"PROY-95834511",h:3},{f:"2025-04-24",p:"PROY-95834511",h:6},
+{f:"2025-04-25",p:"PROY-95834511",h:8},{f:"2025-04-26",p:"PROY-95834511",h:8},{f:"2025-05-07",p:"PROY-28ef93a2",h:4},
+{f:"2025-05-08",p:"PROY-28ef93a2",h:3},{f:"2025-05-26",p:"PROY-ec3850b2",h:2},{f:"2025-05-28",p:"PROY-ec3850b2",h:2},
+{f:"2025-05-29",p:"PROY-ec3850b2",h:4},{f:"2025-05-31",p:"PROY-ec3850b2",h:6},{f:"2025-06-03",p:"PROY-ec3850b2",h:2},
+{f:"2025-06-04",p:"PROY-ec3850b2",h:3},{f:"2025-06-05",p:"PROY-ec3850b2",h:5},{f:"2025-06-06",p:"PROY-ec3850b2",h:4},
+{f:"2025-06-12",p:"PROY-eb0efc5a",h:4},{f:"2025-06-13",p:"PROY-eb0efc5a",h:2},{f:"2025-06-14",p:"PROY-eb0efc5a",h:8},
+{f:"2025-06-19",p:"PROY-ec3850b2",h:2},{f:"2025-06-21",p:"PROY-ec3850b2",h:10},{f:"2025-06-27",p:"PROY-ec3850b2",h:2},
+{f:"2025-07-07",p:"PROY-3d831130",h:2},{f:"2025-07-08",p:"PROY-3d831130",h:2},{f:"2025-07-09",p:"PROY-3d831130",h:3},
+{f:"2025-07-10",p:"PROY-3d831130",h:2},{f:"2025-07-11",p:"PROY-3d831130",h:10},{f:"2025-07-12",p:"PROY-3d831130",h:5},
+{f:"2025-07-12",p:"PROY-33f97da4",h:2},{f:"2025-07-14",p:"PROY-ca6b13e2",h:3},{f:"2025-07-15",p:"PROY-3d831130",h:2},
+{f:"2025-08-06",p:"PROY-1684d56d",h:3},{f:"2025-08-07",p:"PROY-1684d56d",h:2},{f:"2025-08-09",p:"PROY-1684d56d",h:3},
+{f:"2025-08-25",p:"PROY-91a7ae88",h:3},{f:"2025-08-26",p:"PROY-91a7ae88",h:3},{f:"2025-09-01",p:"PROY-91a7ae88",h:4},
+{f:"2025-09-02",p:"PROY-91a7ae88",h:2},{f:"2025-09-05",p:"PROY-91a7ae88",h:2},{f:"2025-09-06",p:"PROY-91a7ae88",h:2},
+{f:"2025-09-09",p:"PROY-b7ce2a4a",h:3},{f:"2025-09-11",p:"PROY-b7ce2a4a",h:3},{f:"2025-09-12",p:"PROY-b7ce2a4a",h:2},
+{f:"2025-09-13",p:"PROY-b7ce2a4a",h:10},{f:"2025-09-15",p:"PROY-b7ce2a4a",h:3},{f:"2025-09-16",p:"PROY-348a0c6b",h:10},
+{f:"2025-09-17",p:"PROY-348a0c6b",h:8},{f:"2025-09-23",p:"PROY-76f2b2bd",h:3},{f:"2025-09-24",p:"PROY-76f2b2bd",h:2},
+{f:"2025-09-30",p:"PROY-348a0c6b",h:7},{f:"2025-10-02",p:"PROY-348a0c6b",h:3},{f:"2025-10-03",p:"PROY-348a0c6b",h:8},
+{f:"2025-10-07",p:"PROY-76f2b2bd",h:2},{f:"2025-10-08",p:"PROY-76f2b2bd",h:4},{f:"2025-10-10",p:"PROY-76f2b2bd",h:5},
+{f:"2025-10-11",p:"PROY-76f2b2bd",h:8},{f:"2025-10-12",p:"PROY-76f2b2bd",h:10},{f:"2025-10-13",p:"PROY-76f2b2bd",h:3},
+{f:"2025-10-29",p:"PROY-7f822a95",h:4},{f:"2025-11-02",p:"PROY-7f822a95",h:5},{f:"2025-11-04",p:"PROY-7f822a95",h:2},
+{f:"2025-12-03",p:"PROY-e6bb8c71",h:3},{f:"2025-12-04",p:"PROY-e6bb8c71",h:4},{f:"2025-12-05",p:"PROY-e6bb8c71",h:5},
+{f:"2025-12-07",p:"PROY-e6bb8c71",h:2},{f:"2025-12-08",p:"PROY-e6bb8c71",h:3},{f:"2025-12-12",p:"PROY-8570126b",h:3},
+{f:"2025-12-17",p:"PROY-8570126b",h:3},{f:"2025-12-18",p:"PROY-8570126b",h:3},{f:"2025-12-20",p:"PROY-68677fac",h:6},
+{f:"2025-12-21",p:"PROY-68677fac",h:5},{f:"2025-12-22",p:"PROY-68677fac",h:3},{f:"2025-12-23",p:"PROY-68677fac",h:2},
+{f:"2026-01-26",p:"PROY-e6af68e6",h:10},{f:"2026-01-28",p:"PROY-e6af68e6",h:4},{f:"2026-01-29",p:"PROY-e6af68e6",h:2},
+{f:"2026-02-11",p:"PROY-4c37caca",h:2},{f:"2026-02-13",p:"PROY-754b2f79",h:2},{f:"2026-02-14",p:"PROY-4c37caca",h:7},
+{f:"2026-02-17",p:"PROY-4c37caca",h:3},{f:"2026-02-17",p:"PROY-754b2f79",h:3},{f:"2026-02-18",p:"PROY-4c37caca",h:2},
+{f:"2026-02-18",p:"PROY-754b2f79",h:2},{f:"2026-03-19",p:"PROY-2b9d4310",h:4},{f:"2026-03-20",p:"PROY-2b9d4310",h:3},
+{f:"2026-03-24",p:"PROY-2b9d4310",h:3},{f:"2026-04-11",p:"PROY-d0a95ef2",h:1},{f:"2026-04-13",p:"PROY-3c4c1eed",h:2},
+{f:"2026-04-14",p:"PROY-3c4c1eed",h:2},{f:"2026-04-15",p:"PROY-3c4c1eed",h:2},{f:"2026-04-17",p:"PROY-3c4c1eed",h:2},
+{f:"2026-04-18",p:"PROY-3c4c1eed",h:7},{f:"2026-04-20",p:"PROY-3c4c1eed",h:2},{f:"2026-04-23",p:"PROY-3c4c1eed",h:3},
+{f:"2026-04-24",p:"PROY-3c4c1eed",h:2},{f:"2026-04-30",p:"PROY-3c4c1eed",h:3},{f:"2026-04-28",p:"PROY-22edd47d",h:1},
+{f:"2026-05-05",p:"PROY-22edd47d",h:9},{f:"2026-05-06",p:"PROY-22edd47d",h:6},{f:"2026-05-07",p:"PROY-22edd47d",h:8},
+];
+</script>
+</body>
+</html>
